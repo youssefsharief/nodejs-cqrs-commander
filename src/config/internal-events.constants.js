@@ -4,5 +4,5 @@ module.exports = {
     deleteAccount: 'deleteAccount',
     reinstateAccount: 'reinstateAccount',
     updateAccountAddress: 'updateAccountAddress',
-    approveAccount: 'approveAccount',
+    approvedIntrnally: 'approvedIntrnally',
 }

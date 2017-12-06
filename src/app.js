@@ -1,36 +1,29 @@
-const path = require('path');
-const morganLogger = require('morgan');
-const bodyParser = require('body-parser');
-const errorHandlersMiddleware = require("./core/errorHandlersMiddleware")
-const winstonLogger = require('./core/logger')
-const cors = require('cors')
-const fallback = require('express-history-api-fallback')
-const express = require('express')
-const root = __dirname + '/public'
-const app = express();
 
+const constatnts = require('./config/commands.constants')
+const bus = require('./messaging/receive-commands')
 
-winstonLogger.configure()
-app.disable('etag')
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
-app.use(morganLogger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cors())
+const commands = require('./commands/commands')
 
-app.get('/' , ()=>{
-    console.log('sssss')
+bus.pollQueueForMessages()
 
+bus.eventEmitter.on(constatnts.approveAccount, data => {
+    commands.approveAccount(data.accountId, data.approvedBy)
 })
-app.use(require(`./routes/accounts.router`))
 
+bus.eventEmitter.on(constatnts.deleteAccount, data => {
+    commands.deleteAccount(data.accountId, data.reason)
+})
 
+bus.eventEmitter.on(constatnts.createAccount, data => {
+    commands.createAccount(data.newAccountId, data.firstName, data.lastName, data.businessName, data.userEmail)
+})
 
-app.use(express.static(root))
-app.use(fallback('index.html', { root: root }))
+bus.eventEmitter.on(constatnts.reinstateAccount, data => {
+    commands.reinstateAccount(data.accountId)
+})
 
-errorHandlersMiddleware(app)
+bus.eventEmitter.on(constatnts.updateAccountAddress, data => {
+    commands.updateAccountAddress(data.accountId, data.addressLine1, data.addressLine2, data.postcode, data.city, data.state, data.countryName)
+})
 
-module.exports = app;
 

@@ -1,1 +1,1 @@
-web: nodemon --optimize_for_size --max_old_space_size=460 --gc_interval=100 src/bin/www
+web: nodemon --optimize_for_size --max_old_space_size=460 --gc_interval=100 src/app.js
