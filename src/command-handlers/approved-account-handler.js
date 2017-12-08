@@ -1,13 +1,11 @@
 
 
 // var accountEvents = AccountModel.find().len().exec()
-
+const events=  require('../config/events.constants')
 const accountEvents = [
-    { name: 'created', payload: { address: { line: 'hjhj' } } },
-    { name: 'deleted', },
-    { name: 'reinstated', },
-    { name: 'accountAddressUpdated', payload: { address: { line: 'hjhj' } } },
-    { name: 'approved', },
+    { name: events.accountCreated, payload: { address: { line: 'hjhj' } } },
+    { name: events.accountAddressUpdated, },
+    { name: events.accountReinstated, },
 ]
 
 const latestAccountAggregate = SnapshotModel.find().limit(1)

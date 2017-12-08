@@ -1,36 +1,40 @@
-const { authorize } = require('../../src/core/authorization')
-const { admin, manager, regular } = require('../../src/config/rolesConstants')
+const account = require('../../src/entities/account')
+const faker = require('faker')
+const events = require('../../src/config/events.constants')
+describe("Events ", function () {
+
+    const accountEvents_FOR_1_Aggregate = [
+        { name: events.accountCreated, payload: { accountId: 'jfkshduirydf', businessName: 'Omar', accountNumber: 56562 } },
+        { name: events.accountAddressUpdated },
+        { name: events.accountReinstated, },
+        { name: events.accountApproved, payload: {accountId: 'dsdsd', approvedBy:'eeee'}}
+    ]
 
 
-describe("Acting as same user", function () {
+    account.reinstated(
+        account.addressUpdated(
+            account.init(payload.accountId, payload.businessName, payload.accountNumber),
+            payload.addressLine1, payload.addressLine2, payload.city, payload.postcode, payload.state, payload.countryName),
+            payload
 
-    class MockRequest {
-        constructor(paramsId, decodedId, role) {
-            this.params = { id: paramsId }
-            this.decoded = { _id: decodedId, role: role }
+    )
+
+    const accountAggregate = accountEvents_FOR_1_Aggregate.reduce((acc, x) => {
+        switch (x.name) {
+            case events.accountCreated:
+                return account.init(x.payload.accountId, x.payload.businessName, x.payload.accountNumber)
+            case events.accountApproved:
+                return account.approved(acc, )
+            case events.accountDeleted: acc.state = false
+                return account.deleted(acc)
+            case events.accountReinstated: acc.state = true
+                return account.reinstated(acc)
+            case 'accountAddressUpdated': acc.address = x.payload.address
+                return acc
+            default:
         }
-    }
+    }, {})
 
-    class MockResponse {
-        status(num) {
-            toBeSpied.notAuthorized()
-            return this
-        }
-        json(str) {
-
-        }
-    }
-
-    const toBeSpied = {
-        notAuthorized() {
-            return null
-        },
-        authorized() {
-            return null
-        }
-    }
-
-    const next = () => toBeSpied.authorized()
 
 
     describe('allowed admin only', () => {
