@@ -1,9 +1,10 @@
 {
-  "name": "crossover",
+  "name": "ximo-sample",
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "e2e": "node ./src/bin/www -t",
+    "flow": "flow",
+    "flow:check": "flow check ./src/",
     "coverage": "nodemon --exec istanbul cover node_modules/jasmine/bin/jasmine.js JASMINE_CONFIG_PATH=jasmine.json",
     "test": "nodemon --exec jasmine JASMINE_CONFIG_PATH=jasmine.json",
     "dev": "nodemon ./src/bin/www",
@@ -14,9 +15,11 @@
   },
   "dependencies": {
     "aws-sdk": "^2.163.0",
+    "faker": "^4.1.0",
     "foreman": "2.0.0"
   },
   "devDependencies": {
+    "flow-bin": "^0.60.1",
     "jasmine": "^2.7.0",
     "nodemon": "^1.11.0"
   }
