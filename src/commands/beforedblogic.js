@@ -1,8 +1,8 @@
+const db = require('../core/mongo-interaction')
 
 
-db = {}
-
-const snapshot = db.getLatestSnapshot()
-
-db.getAllEventsAfterEventId
-
+async function ESLogic(){
+    const snapshot = await db.getLatestSnapShotByAggregateId(id)
+    db.findLatestEventById
+    db.getEventsAfterTheSnaphot()
+}

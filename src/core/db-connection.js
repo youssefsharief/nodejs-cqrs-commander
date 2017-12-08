@@ -6,7 +6,7 @@ function connectToOriginalDb(){
     return mongoose.connect(process.env.mongodbEventStoreURI, { useMongoClient: true});
 }
 function connectToTestDb(){
-    return mongoose.connect(process.env.mongodbEventStoreURI, { useMongoClient: true});
+    return mongoose.connect(process.env.mongodbEventStoreTestURI, { useMongoClient: true});
 }
 
 

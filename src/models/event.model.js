@@ -15,8 +15,8 @@ const schema = new Schema({
         type: Schema.Types.Mixed,
         required: true,
     },
-    eventSequence: {type: Number, required: true},
-    CreatedOnUtc: { type: Date, default: Date.now },
+    eventSequence: {type: Number, required: false},
+    CreatedOnUtc: { type: Date, default: Date.now, required: true },
     AggregateVersion: {type: Number, required: true}
 })
 
