@@ -6,3 +6,12 @@ async function ESLogic(){
     db.findLatestEventById
     db.getEventsAfterTheSnaphot()
 }
+
+
+
+
+
+
+console.log(accountAggregate)
+
+

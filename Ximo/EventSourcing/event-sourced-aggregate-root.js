@@ -39,14 +39,23 @@ class EventSourcedAggregateRoot {
         var domainEventEnvelope = new DomainEventEnvelope(Id, ++LastEventSequence, Version, event);
         this._uncommittedEvents.push(domainEventEnvelope);
     }
-
 }
 
-let t = 5
 
-let _uncommittedEvents = new queue();
-_uncommittedEvents.push(5)
-_uncommittedEvents.unshift(2)
-_uncommittedEvents.unshift(1)
-// _uncommittedEvents.pop()
-console.log(_uncommittedEvents.jobs)
+    let _isDirty
+    let version
+    
+function applyChange(aggregate, fn, event ){
+    applyEvent(aggregate, fn,event)
+}
+
+function applyEvent(aggregate, fn,event) {
+    try{
+        fn(event)
+    } catch(e) {
+        throw Error(e)
+    }
+    
+}
+
+
