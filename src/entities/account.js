@@ -3,6 +3,7 @@ const SystemTagSubEntity = require('./sub-entities/system-tag')
 const AddressSubentity = require('./sub-entities/address')
 const crypto = require("crypto");
 const events = require('../config/events.constants')
+const {applyChange} = 
 
 function init(newAccountId, businessName, accountNumber) {
     const accountId = newAccountId ? newAccountId :  crypto.randomBytes(16).toString("hex"); 

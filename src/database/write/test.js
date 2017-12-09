@@ -22,4 +22,4 @@ async function aykalam () {
 }
 
 
-aykalam()
+aykalam

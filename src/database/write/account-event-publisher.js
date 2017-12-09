@@ -1,16 +1,5 @@
 
-function applyChange(aggregate, e, applyFn, eventName){
-    try{
-        applyFn(aggregate, e)
-    } catch (e) {
-        throw e
-    }
 
-    aggregate.accountId
-
-    var domainEventEnvelope = new DomainEventEnvelope(Id, ++LastEventSequence, Version, e);
-    _uncommittedEvents.Enqueue(domainEventEnvelope);
-}
 
 
 function applyEvent(account, e, applyFn){
