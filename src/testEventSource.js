@@ -27,12 +27,15 @@ function addEvent(eventName,aggregateId, payload, eventSequence,aggregateVersion
     })
     return a.save().then(x => console.log(x)).catch(err => console.log(err.message))
 }
+// const payload = {
+//     accountId: '12345',
+//     businessName: 'fdg',
+//     accountId: crypto.randomBytes(16).toString("hex")
+// }
 const payload = {
-    accountId: '12345',
-    businessName: 'fdg',
-    accountId: crypto.randomBytes(16).toString("hex")
+    reason: 'because',
 }
-addEvent('accountCreated', 'dasdasds', payload, 5,2 )
+addEvent('accountDeleted', 'dasdasds', payload, 5,2 )
 
 
 // 184a031d05a6fcebf6dc5c7eb2e4d0a2

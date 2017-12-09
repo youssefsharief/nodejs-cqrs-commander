@@ -38,12 +38,9 @@ async function save(){
 
 
 
-function getLatestSnapshot(){
-    SnapshotModel.find({}).sort({eventSequence: 1}).limit(1)
-}
 
 
-
-function getAggregateEvents(aggregateId) {
-    return await EventModel.find({aggregateId})
+function postEvent(event){
+    const e = new eventModel(event)
+    e.save().then(ok=>console.log(ok)).catch(err=>console.log(err))
 }
