@@ -15,9 +15,12 @@
   },
   "dependencies": {
     "aws-sdk": "^2.163.0",
+    "eventstore": "^1.12.9",
     "faker": "^4.1.0",
     "foreman": "2.0.0",
     "joi": "^13.0.2",
+    "mongodb": "^3.0.0-rc0",
+    "mongoose": "^4.13.6",
     "node-eventstore": "0.0.1"
   },
   "devDependencies": {

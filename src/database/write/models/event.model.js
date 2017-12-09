@@ -17,10 +17,8 @@ const schema = new Schema({
     },
     eventSequence: {type: Number, required: false},
     CreatedOnUtc: { type: Date, default: Date.now, required: true },
-    AggregateVersion: {type: Number, required: true}
+    aggregateVersion: {type: Number, required: true}
 })
 
 
-
-
-module.exports = schema
+module.exports = mongoose.model('Event', schema);

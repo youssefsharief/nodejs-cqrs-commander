@@ -10,8 +10,6 @@ function connectToTestDb(){
 }
 
 
-
-
 mongoose.connection.on('open', () => console.log('Db connected'))
 
 mongoose.connection.on('error', (error) => {
