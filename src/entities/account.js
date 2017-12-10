@@ -2,25 +2,31 @@ const StatusSubEntity = require('./sub-entities/status')
 const SystemTagSubEntity = require('./sub-entities/system-tag')
 const AddressSubentity = require('./sub-entities/address')
 const crypto = require("crypto");
-const events = require('../config/events.constants')
-const {applyChange} = 
+const eventsConstants = require('../config/events.constants')
+const events = require('events');
+const eventEmitter = new events.EventEmitter();
+
 
 function init(newAccountId, businessName, accountNumber) {
-    const accountId = newAccountId ? newAccountId :  crypto.randomBytes(16).toString("hex"); 
-    let account = applyChange(account, {accountId, businessName, accountNumber}, applyCreateAccount, events.accountCreated)
-    account = addSystemTag(account, "Transportation", true, false);
-    account = addSystemTag(account, "Sick Leave", false, true);
-    account = addSystemTag(account, "Training", true, true);
-    return account
+    const accountId = newAccountId ? newAccountId : crypto.randomBytes(16).toString("hex");
+    const accountCreatedEvent = { accountId, businessName, accountNumber }
+    const account = applyCreateAccount(accountCreatedEvent)
+    eventEmitter.emit(eventsConstants.internallyDone, eventsConstants.accountCreated, accountCreatedEvent)
+    addSystemTag(account, "Transportation", true, false)
+    addSystemTag(account, "Sick Leave", false, true)
+    addSystemTag(account, "Training", true, true)
 }
 
-function applyCreateAccount( account, {accountId, businessName, accountNumber}){
-    return { id: accountId, businessName, accountNumber, systemTags:[], status:{}, address:{} }
+function applyCreateAccount(e) {
+    const account = { id: e.accountId, businessName: e.businessName, accountNumber: e.accountNumber, systemTags: [], status: {}, address: {} }
+    return account
 }
 
 function addSystemTag(account, name, appliesToExpenses, appliesToTimesheets) {
     if (account.systemTags.find(x => x.name === name)) throw Error("This system tag already exixsts")
-    return applyChange(account, { accountId: account.id, name, appliesToExpenses, appliesToTimesheets }, applyAddSytemTag, events.systemTagAdded )
+    const event = { accountId: account.id, name, appliesToExpenses, appliesToTimesheets }
+    applyAddSytemTag(account, event)
+    eventEmitter.emit(eventsConstants.internallyDone, eventsConstants.systemTagAdded, event)
 }
 
 function applyAddSytemTag(account, e) {
@@ -31,7 +37,9 @@ function applyAddSytemTag(account, e) {
 
 function deleteAccount(account, reason) {
     if (!reason) throw Error('You could not have a blank deleted reason')
-    return applyChange(account, { accountId: account.id, reason }, applyDelete, events.accountDeleted)
+    const event = { accountId: account.id, reason }
+    applyDelete(account, event)
+    eventEmitter.emit(eventsConstants.internallyDone, eventsConstants.accountDeleted, event)
 }
 
 function applyDelete(account, e) {
@@ -43,7 +51,9 @@ function applyDelete(account, e) {
 function approve(account, approvedBy) {
     if (!approvedBy) throw Error('You could not have a blank approvedBy')
     if (account.status.isApproved) throw Error('Your account is already approved')
-    return applyChange(account, { accountId: account.id, approvedBy }, applyApprove, events.accountApproved)
+    const event = { accountId: account.id, approvedBy }
+    applyApprove(account, event)
+    eventEmitter.emit(eventsConstants.internallyDone, eventsConstants.accountApproved, event)
 }
 
 function applyApprove(account, e) {
@@ -53,8 +63,9 @@ function applyApprove(account, e) {
 
 function reinstate(account) {
     if (!account.status.isDeleted) throw Error('The account cannot be reinstated as it has not been deleted in the first place :)')
-    // Ximo.applyChange(account, applyReinstate, { accountId: account.id })
-    return applyChange(account, {accountId: account.id}, applyReinstate, events.accountReinstated)
+    const event = { accountId: account.id }
+    applyReinstate(account, event)
+    eventEmitter.emit(eventsConstants.internallyDone, eventsConstants.accountReinstated, event)
 }
 
 function applyReinstate(account, e) {
@@ -65,8 +76,9 @@ function applyReinstate(account, e) {
 
 function changeAddress(account, addressLine1, addressLine2, city, postcode, state, countryName) {
     if (!account.status.isDeleted) throw Error('Account is deleted')
-    return applyChange(account, { accountId: account.id, addressLine1, addressLine2, city, postcode, state, countryName }, 
-        applyChangeAddress, events.accountAddressUpdated)
+    const event = { accountId: account.id, addressLine1, addressLine2, city, postcode, state, countryName }
+    applyChangeAddress(account, event)
+    eventEmitter.emit(eventsConstants.internallyDone, eventsConstants.accountAddressUpdated, event)
 }
 
 function applyChangeAddress(account, e) {
@@ -77,7 +89,7 @@ function applyChangeAddress(account, e) {
 
 module.exports = {
     addSystemTag, changeAddress, approve, deleteAccount, reinstate, init, applyChangeAddress, applyReinstate,
-    applyApprove, applyDelete, applyAddSytemTag, applyChangeAddress, applyAddSytemTag,
+    applyApprove, applyDelete, applyAddSytemTag, applyChangeAddress, applyAddSytemTag, eventEmitter
 }
 
 

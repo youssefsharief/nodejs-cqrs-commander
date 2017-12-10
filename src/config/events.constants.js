@@ -4,5 +4,6 @@ module.exports = {
     accountReinstated: 'accountReinstated',
     accountApproved: 'accountApproved',
     accountAddressUpdated: 'accountAddressUpdated',
-    systemTagAdded: 'systemTagAdded'
+    systemTagAdded: 'systemTagAdded',
+    internallyDone: 'internallyDone'
 }

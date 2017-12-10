@@ -8,30 +8,52 @@ const { approveAccountHandler, createAccountHandler, deleteAccountHandler,
 
 const reduce = require('./reducers/account-reducer')
 const accountEntity = require('./entities/account')
+const eventsConstants = require('./config/events.constants')
+
 bus.pollQueueForMessages()
 
 bus.eventEmitter.on(constants.approveAccount, async command => {
 
 
 
-    ximux.initNewCommand(requestId, command, constants.approveAccount)
+    let snapshot = null
+    let eventsToBeAppliedToEntity = []
 
-    const idb = new InitialDbInterActionAfterCommand(command.id, requestId)
-    await idb.init()
-    const accountBeforeCommandConducted = idb.getCurrentAggregateStateFromDbAndReducer(command.id)
+    async function init() {
+        snapshot = await getLatestSnapShotByAggregateId(command.id)
+        if (snapshot) {
+            eventsToBeAppliedToEntity = await getAggregateEventsAfterSnaphot(this.snapshot)
+            // this.version = this.snapshot.eventVersion
+        } else {
+            eventsToBeAppliedToEntity = await getAllAggregateEvents(this.id)
+            // this.version = events.length
+        }
+    }
 
-    accountEntity.approve(accountBeforeCommandConducted)
+    function getCurrentAggregateStateFromDbAndReducer() {
+        return reduce(eventsToBeAppliedToEntity, snapshot)
+    }
 
-    const idb = new InitialDbInterActionAfterCommand(command.id, requestId)
-    await idb.init()
-    const accountBeforeCommandConducted = idb.getCurrentAggregateStateFromDbAndReducer(command.id)
- 
-
-    const {event, aggregateAfterEvent, eventName} = accountEntity.approve(accountBeforeCommandConducted)
-    global.mem.addPartialEventToBeSaved(requestId, {payload:event, name: eventName, aggregateInCaseNeeded: aggregateAfterEvent})
+    await init()
+    const accountBeforeCommandConducted = getCurrentAggregateStateFromDbAndReducer(command.id)
 
 
-  
+    const accountAggregateAfterPerformingCommand = accountEntity.approve(accountBeforeCommandConducted)
+
+    const eventsToBeSaved = []
+    accountEntity.eventEmitter.on(eventsConstants.internallyDone, (eventName, payload) => {
+        eventsToBeSaved.push()
+    })
+
+
+
+
+
+    const { event, aggregateAfterEvent, eventName } = accountEntity.approve(accountBeforeCommandConducted)
+    global.mem.addPartialEventToBeSaved( { payload: event, name: eventName, aggregateInCaseNeeded: aggregateAfterEvent })
+
+
+
 
 
 
@@ -61,26 +83,9 @@ bus.eventEmitter.on(constants.updateAccountAddress, command => {
 
 class InitialDbInterActionAfterCommand {
 
-    constructor(id, requestId) {
-        this.id = id
-        this.requestId = requestId
-    }
+    
 
-    async init() {
-        this.snapshot = await getLatestSnapShotByAggregateId(this.id)
-        if (this.snapshot) {
-            this.events = await getAggregateEventsAfterSnaphot(this.snapshot)
-            // this.version = this.snapshot.eventVersion
-        } else {
-            this.events = await getAllAggregateEvents(this.id)
-            global.mem.addEventsToBePlayed(this.requestId, this.events)
-            // this.version = events.length
-        }
-    }
-
-    getCurrentAggregateStateFromDbAndReducer() {
-        return reduce(this.events, this.snapshot)
-    }
+    
 
     saveEvent() {
 
