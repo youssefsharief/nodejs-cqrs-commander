@@ -1,10 +1,10 @@
 
-const logger = require('../Ximo/CQRS/logging-command-decorator')
+// const logger = require('../Ximo/CQRS/logging-command-decorator')
 const crypto = require("crypto");
 const reduce = require('../reducers/account-reducer')
 const accountEntity = require('../entities/account')
 const eventsConstants = require('../config/events.constants')
-const db = require('../database/write/db.ctrl')
+const db = require('../database/write/db-ctrl')
 
 
 async function handle(commandName, command ) {
