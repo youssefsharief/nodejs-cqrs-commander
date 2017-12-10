@@ -4,10 +4,12 @@ const crypto = require("crypto");
 const reduce = require('../reducers/account-reducer')
 const accountEntity = require('../entities/account')
 const eventsConstants = require('../config/events.constants')
+const commandFunctionMapper = require('../services/command-function-mapper')
 const db = require('../database/write/db-ctrl')
 
 
-async function handle(commandName, command ) {
+
+async function handle(commandName, command) {
     let snapshot = null
     let eventsToBeAppliedToEntity = []
     let eventSequence = null
@@ -29,7 +31,7 @@ async function handle(commandName, command ) {
     }
     await init()
     const accountBeforeCommandConducted = getCurrentAggregateStateFromDbAndReducer(command.id)
-    const accountAggregateAfterPerformingCommand = accountEntity.fn(accountBeforeCommandConducted)
+    const accountAggregateAfterPerformingCommand = commandFunctionMapper.get(commandName)(accountBeforeCommandConducted)
     const eventsToBeSaved = []
     accountEntity.eventEmitter.on(eventsConstants.internallyDone, (eventName, payload) => {
         eventsToBeSaved.push({ id: crypto.randomBytes(16).toString("hex"), name: eventName, aggregateId: command.id, payload, eventSequence: ++eventSequence, aggregateVersion: aggregateVersion + 1 })
@@ -38,7 +40,7 @@ async function handle(commandName, command ) {
     await db.saveEvents(eventsToBeSaved)
     if (eventsToBeSaved.findIndex(e => e.sequence % 10 === 0) >= 0)
         await db.saveSnapshot({ lastEventSequence: eventSequence, aggregateRootId: command.id, payload: accountAggregateAfterPerformingCommand })
-
+    
 }
 
 
