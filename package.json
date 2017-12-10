@@ -8,13 +8,15 @@
     "coverage": "nodemon --exec istanbul cover node_modules/jasmine/bin/jasmine.js JASMINE_CONFIG_PATH=jasmine.json",
     "test": "nodemon --exec jasmine JASMINE_CONFIG_PATH=jasmine.json",
     "dev": "nodemon ./src/bin/www",
-    "start": "nf start"
+    "start": "nf start",
+    "lint": "eslint src/app.js"
   },
   "engines": {
     "node": "8.9.1"
   },
   "dependencies": {
     "aws-sdk": "^2.163.0",
+    "eslint": "^4.13.0",
     "eventstore": "^1.12.9",
     "faker": "^4.1.0",
     "foreman": "2.0.0",
