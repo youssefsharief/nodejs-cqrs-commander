@@ -11,13 +11,7 @@ const accountEntity = require('./entities/account')
 bus.pollQueueForMessages()
 
 bus.eventEmitter.on(constants.approveAccount, async command => {
-    const requestId = Math.random(8);
 
-    // if (!global.mem) global.mem = {}
-    // if (!global.mem.requests.length) global.mem.requests = []
-
-
-    // global.mem.createNewRequest()
 
 
     ximux.initNewCommand(requestId, command, constants.approveAccount)
@@ -28,10 +22,16 @@ bus.eventEmitter.on(constants.approveAccount, async command => {
 
     accountEntity.approve(accountBeforeCommandConducted)
 
-    global.mem.addPartialEventToBeSaved(requestId, eventPayload, eventName, aggregateAfterEvent)
+    const idb = new InitialDbInterActionAfterCommand(command.id, requestId)
+    await idb.init()
+    const accountBeforeCommandConducted = idb.getCurrentAggregateStateFromDbAndReducer(command.id)
+ 
+
+    const {event, aggregateAfterEvent, eventName} = accountEntity.approve(accountBeforeCommandConducted)
+    global.mem.addPartialEventToBeSaved(requestId, {payload:event, name: eventName, aggregateInCaseNeeded: aggregateAfterEvent})
 
 
-
+  
 
 
 
@@ -68,15 +68,10 @@ class InitialDbInterActionAfterCommand {
 
     async init() {
         this.snapshot = await getLatestSnapShotByAggregateId(this.id)
-
         if (this.snapshot) {
             this.events = await getAggregateEventsAfterSnaphot(this.snapshot)
-            global.mem.addSnapshot(this.requestId)
-            global.mem.addEvents(this.events)
             // this.version = this.snapshot.eventVersion
-
-        }
-        else {
+        } else {
             this.events = await getAllAggregateEvents(this.id)
             global.mem.addEventsToBePlayed(this.requestId, this.events)
             // this.version = events.length
@@ -85,16 +80,11 @@ class InitialDbInterActionAfterCommand {
 
     getCurrentAggregateStateFromDbAndReducer() {
         return reduce(this.events, this.snapshot)
-
     }
 
     saveEvent() {
 
     }
-
-
-    
-    
 
 
 }
