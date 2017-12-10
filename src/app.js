@@ -1,5 +1,5 @@
 
-const constatnts = require('./config/commands.constants')
+const constants = require('./config/commands.constants')
 const bus = require('./messaging/receive-commands')
 const logger = require('../Ximo/CQRS/logging-command-decorator')
 const { getAggregateEventsAfterSnaphot, getAllAggregateEvents, getLatestSnapShotByAggregateId } = require('./database/write/events.ctrl')
@@ -10,18 +10,25 @@ const reduce = require('./reducers/account-reducer')
 const accountEntity = require('./entities/account')
 bus.pollQueueForMessages()
 
-bus.eventEmitter.on(constatnts.approveAccount, async command => {
-    global.commands = []
-    global.commands.push({id: command.id, ds})
-    const idb = new InitialDbInterActionAfterCommand(command.id)
+bus.eventEmitter.on(constants.approveAccount, async command => {
+    const requestId = Math.random(8);
+
+    // if (!global.mem) global.mem = {}
+    // if (!global.mem.requests.length) global.mem.requests = []
+
+
+    // global.mem.createNewRequest()
+
+
+    ximux.initNewCommand(requestId, command, constants.approveAccount)
+
+    const idb = new InitialDbInterActionAfterCommand(command.id, requestId)
     await idb.init()
     const accountBeforeCommandConducted = idb.getCurrentAggregateStateFromDbAndReducer(command.id)
-    const eventPayload = accountEntity.approve(accountBeforeCommandConducted)
 
-    idb.saveEvent({payload:eventPayload, name: 'accountApproved'})
+    accountEntity.approve(accountBeforeCommandConducted)
 
-
-
+    global.mem.addPartialEventToBeSaved(requestId, eventPayload, eventName, aggregateAfterEvent)
 
 
 
@@ -31,48 +38,54 @@ bus.eventEmitter.on(constatnts.approveAccount, async command => {
 
 
 
-    logger(approveAccountHandler, constatnts.approveAccount, command)
+    logger(approveAccountHandler, constants.approveAccount, command)
 })
 
-bus.eventEmitter.on(constatnts.deleteAccount, command => {
-    logger(deleteAccountHandler, constatnts.deleteAccount, command)
+bus.eventEmitter.on(constants.deleteAccount, command => {
+    logger(deleteAccountHandler, constants.deleteAccount, command)
 })
 
-bus.eventEmitter.on(constatnts.createAccount, command => {
-    logger(createAccountHandler, constatnts.createAccount, command)
+bus.eventEmitter.on(constants.createAccount, command => {
+    logger(createAccountHandler, constants.createAccount, command)
 })
 
-bus.eventEmitter.on(constatnts.reinstateAccount, command => {
-    logger(reinstateAccountHandler, constatnts.reinstateAccount, command)
+bus.eventEmitter.on(constants.reinstateAccount, command => {
+    logger(reinstateAccountHandler, constants.reinstateAccount, command)
 })
 
-bus.eventEmitter.on(constatnts.updateAccountAddress, command => {
-    logger(updateAccountAdderssHandler, constatnts.updateAccountAddress, command)
+bus.eventEmitter.on(constants.updateAccountAddress, command => {
+    logger(updateAccountAdderssHandler, constants.updateAccountAddress, command)
 })
 
 
 
 class InitialDbInterActionAfterCommand {
 
-    constructor(id) {
+    constructor(id, requestId) {
         this.id = id
+        this.requestId = requestId
     }
 
     async init() {
         this.snapshot = await getLatestSnapShotByAggregateId(this.id)
-        let events
+
         if (this.snapshot) {
             this.events = await getAggregateEventsAfterSnaphot(this.snapshot)
-            this.version = this.snapshot.eventVersion
+            global.mem.addSnapshot(this.requestId)
+            global.mem.addEvents(this.events)
+            // this.version = this.snapshot.eventVersion
+
         }
         else {
             this.events = await getAllAggregateEvents(this.id)
-            this.version = events.length
+            global.mem.addEventsToBePlayed(this.requestId, this.events)
+            // this.version = events.length
         }
     }
 
     getCurrentAggregateStateFromDbAndReducer() {
         return reduce(this.events, this.snapshot)
+
     }
 
     saveEvent() {
@@ -80,18 +93,9 @@ class InitialDbInterActionAfterCommand {
     }
 
 
-    applyChange(aggregate, event, applyFn, eventName){
-        try{
-            applyFn(aggregate, event)
-        } catch (err) {
-            throw err
-        }
     
-        aggregate.accountId
     
-        var domainEventEnvelope = new DomainEventEnvelope(Id, ++LastEventSequence, Version, e);
-        _uncommittedEvents.Enqueue(domainEventEnvelope);
-    }
 
 
 }
+
