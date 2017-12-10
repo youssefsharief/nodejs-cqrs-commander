@@ -16,7 +16,7 @@ async function handle(commandName, command ) {
         snapshot = await db.getLatestSnapShotByAggregateId(command.id)
         let nextQuery
         if (snapshot) {
-            nextQuery = db.getSortedAggregateEventsAfterSnaphot(snapshot)
+            nextQuery = db.getSortedlastEventsOnly(snapshot.aggregateRootId, snapshot.lastEventSequence)
         } else {
             nextQuery = db.getSortedAllAggregateEvents(command.id)
         }
@@ -25,7 +25,7 @@ async function handle(commandName, command ) {
         aggregateVersion = eventsToBeAppliedToEntity[eventsToBeAppliedToEntity.length - 1].aggregateVersion
     }
     function getCurrentAggregateStateFromDbAndReducer() {
-        return reduce(eventsToBeAppliedToEntity, snapshot.aggregateState)
+        return reduce(eventsToBeAppliedToEntity, snapshot.payload)
     }
     await init()
     const accountBeforeCommandConducted = getCurrentAggregateStateFromDbAndReducer(command.id)
@@ -35,9 +35,9 @@ async function handle(commandName, command ) {
         eventsToBeSaved.push({ id: crypto.randomBytes(16).toString("hex"), name: eventName, aggregateId: command.id, payload, eventSequence: ++eventSequence, aggregateVersion: aggregateVersion + 1 })
     })
     await db.concurrencyCheck(aggregateVersion, command.id)
-    await db.save(eventsToBeSaved)
+    await db.saveEvents(eventsToBeSaved)
     if (eventsToBeSaved.findIndex(e => e.sequence % 10 === 0) >= 0)
-        await db.saveSnapshot({ eventId: eventsToBeSaved[eventsToBeSaved.length - 1].id, eventVersion: eventSequence, aggregateId: command.id, aggregateState: accountAggregateAfterPerformingCommand })
+        await db.saveSnapshot({ lastEventSequence: eventSequence, aggregateRootId: command.id, payload: accountAggregateAfterPerformingCommand })
 
 }
 

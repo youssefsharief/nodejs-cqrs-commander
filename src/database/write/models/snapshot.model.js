@@ -3,13 +3,13 @@ const Schema = mongoose.Schema
 
 
 const schema = new Schema({
-    eventId: { type: String, required: true },
-    eventVersion: { type: Number, required: true },
-    aggregateState: {
+    lastEventSequence: { type: Number, required: true },
+    payload: {
         type: Schema.Types.Mixed,
         required: true,
     },
-    aggregateId: { type: String, required: true },
+    aggregateRootId: { type: String, required: true },
+    
 })
 
 

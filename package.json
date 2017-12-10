@@ -9,7 +9,8 @@
     "test": "nodemon --exec jasmine JASMINE_CONFIG_PATH=jasmine.json",
     "dev": "nodemon ./src/bin/www",
     "start": "nf start",
-    "lint": "eslint src/app.js"
+    "lint": "eslint src/app.js",
+    "db-test": "nf test"
   },
   "engines": {
     "node": "8.9.1"
@@ -29,6 +30,7 @@
     "node-eventstore": "0.0.1"
   },
   "devDependencies": {
+    "dotenv": "^4.0.0",
     "flow-bin": "^0.60.1",
     "jasmine": "^2.7.0",
     "nodemon": "^1.11.0"

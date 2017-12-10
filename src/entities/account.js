@@ -28,7 +28,7 @@ function applyCreate(e) {
 
 function addSystemTag(account, name, appliesToExpenses, appliesToTimesheets) {
     if (account.systemTags.find(x => x.name === name)) throw Error("This system tag already exixsts")
-    const event = { accountId: account.id, name, appliesToExpenses, appliesToTimesheets }
+    const event = { id: account.id, name, appliesToExpenses, appliesToTimesheets }
     applyAddSytemTag(account, event)
     eventEmitter.emit(eventsConstants.internallyDone, eventsConstants.systemTagAdded, event)
 }
@@ -42,7 +42,7 @@ function applyAddSytemTag(account, e) {
 function deleteAccount(account, reason) {
     joi.assert(reason, joi.string().min(1).required().max(100))
     if (account.status.isDeleted) throw Error('Can not delete a deleted account')
-    const event = { accountId: account.id, reason }
+    const event = { id: account.id, reason }
     applyDelete(account, event)
     eventEmitter.emit(eventsConstants.internallyDone, eventsConstants.accountDeleted, event)
     return account
@@ -57,7 +57,7 @@ function applyDelete(account, e) {
 function approve(account, approvedBy) {
     if (!approvedBy) throw Error('You could not have a blank approvedBy')
     if (account.status.isApproved) throw Error('Your account is already approved')
-    const event = { accountId: account.id, approvedBy }
+    const event = { id: account.id, approvedBy }
     applyApprove(account, event)
     eventEmitter.emit(eventsConstants.internallyDone, eventsConstants.accountApproved, event)
     return account
@@ -70,7 +70,7 @@ function applyApprove(account, e) {
 
 function reinstate(account) {
     if (!account.status.isDeleted) throw Error('The account cannot be reinstated as it has not been deleted in the first place :)')
-    const event = { accountId: account.id }
+    const event = { id: account.id }
     applyReinstate(account, event)
     eventEmitter.emit(eventsConstants.internallyDone, eventsConstants.accountReinstated, event)
     return account
@@ -84,7 +84,7 @@ function applyReinstate(account, e) {
 
 function changeAddress(account, addressLine1, addressLine2, city, postcode, state, countryName) {
     if (account.status.isDeleted) throw Error('Account is deleted')
-    const event = { accountId: account.id, addressLine1, addressLine2, city, postcode, state, countryName }
+    const event = { id: account.id, addressLine1, addressLine2, city, postcode, state, countryName }
     applyChangeAddress(account, event)
     eventEmitter.emit(eventsConstants.internallyDone, eventsConstants.accountAddressUpdated, event)
     return account
