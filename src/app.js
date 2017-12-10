@@ -2,14 +2,14 @@
 const constants = require('./config/commands.constants')
 const bus = require('./messaging/receive-commands')
 const logger = require('../Ximo/CQRS/logging-command-decorator')
-const { getAggregateEventsAfterSnaphot, getAllAggregateEvents, getLatestSnapShotByAggregateId } = require('./database/write/events.ctrl')
+const { getLatestSnapShotByAggregateId, getSortedAggregateEventsAfterSnaphot, getSortedAllAggregateEvents } = require('./database/write/events.ctrl')
 const { approveAccountHandler, createAccountHandler, deleteAccountHandler,
     reinstateAccountHandler, updateAccountAdderssHandler } = require('./command-handlers/account-command-handlers')
 
 const reduce = require('./reducers/account-reducer')
 const accountEntity = require('./entities/account')
 const eventsConstants = require('./config/events.constants')
-
+const {validateApproveInput} = require('./entities/validation/account-validation')
 bus.pollQueueForMessages()
 
 bus.eventEmitter.on(constants.approveAccount, async command => {
@@ -18,16 +18,24 @@ bus.eventEmitter.on(constants.approveAccount, async command => {
 
     let snapshot = null
     let eventsToBeAppliedToEntity = []
+    let eventSequence = null
+    let aggregateVersion = null
 
     async function init() {
         snapshot = await getLatestSnapShotByAggregateId(command.id)
+        let nextQuery
         if (snapshot) {
-            eventsToBeAppliedToEntity = await getAggregateEventsAfterSnaphot(this.snapshot)
-            // this.version = this.snapshot.eventVersion
+            nextQuery = getSortedAggregateEventsAfterSnaphot(snapshot)
+            // version = snapshot.eventVersion
         } else {
-            eventsToBeAppliedToEntity = await getAllAggregateEvents(this.id)
-            // this.version = events.length
+            nextQuery = getSortedAllAggregateEvents(command.id)
+            // version = events.length
         }
+
+        eventsToBeAppliedToEntity = await nextQuery
+
+        eventSequence = eventsToBeAppliedToEntity[eventsToBeAppliedToEntity.length - 1].eventSequence
+        aggregateVersion  = eventsToBeAppliedToEntity[eventsToBeAppliedToEntity.length - 1].aggregateVersion
     }
 
     function getCurrentAggregateStateFromDbAndReducer() {
@@ -38,11 +46,11 @@ bus.eventEmitter.on(constants.approveAccount, async command => {
     const accountBeforeCommandConducted = getCurrentAggregateStateFromDbAndReducer(command.id)
 
 
-    const accountAggregateAfterPerformingCommand = accountEntity.approve(accountBeforeCommandConducted)
+    const accountAggregateAfterPerformingCommand = accountEntity.approve(accountBeforeCommandConducted, validateApproveInput(command.approvedBy))
 
     const eventsToBeSaved = []
     accountEntity.eventEmitter.on(eventsConstants.internallyDone, (eventName, payload) => {
-        eventsToBeSaved.push()
+        eventsToBeSaved.push({ name: eventName, aggregateId: command.id, payload, eventSequence: ++eventSequence, aggregateVersion:aggregateVersion + 1 })
     })
 
 
@@ -50,7 +58,7 @@ bus.eventEmitter.on(constants.approveAccount, async command => {
 
 
     const { event, aggregateAfterEvent, eventName } = accountEntity.approve(accountBeforeCommandConducted)
-    global.mem.addPartialEventToBeSaved( { payload: event, name: eventName, aggregateInCaseNeeded: aggregateAfterEvent })
+    global.mem.addPartialEventToBeSaved({ payload: event, name: eventName, aggregateInCaseNeeded: aggregateAfterEvent })
 
 
 
@@ -83,9 +91,9 @@ bus.eventEmitter.on(constants.updateAccountAddress, command => {
 
 class InitialDbInterActionAfterCommand {
 
-    
 
-    
+
+
 
     saveEvent() {
 

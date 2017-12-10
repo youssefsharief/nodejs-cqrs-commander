@@ -1,12 +1,16 @@
-const error = require('../../../Ximo/errors')
+const joi = require('joi')
 
-const setAddressLine1 = x => x.length > 100 ? error.tooLong('Address Line 1') : x
-const setAddressLine2 = x => x.length > 100 ? error.tooLong('Address Line 2') : x
-const setCountryName = x => x.length > 100 ? error.tooLong('Country name') : x
-const setCity = x => x.length > 100 ? error.tooLong('City') : x
-const setState = x => x.length > 100 ? error.tooLong('State') : x
-const setPostcode = x => x.length > 12 ? error.tooLong('PostCode') : x
+const setAddressLine1 = x =>  assetLessThan(x, 100)
+const setAddressLine2 = x =>  assetLessThan(x, 100)
+const setCountryName = x => assetLessThan(x, 100)
+const setCity = x => assetLessThan(x, 100)
+const setState = x => assetLessThan(x, 100)
+const setPostcode = x => assetLessThan(x, 12)
 
+function assetLessThan(x, number) {
+    joi.assert(x, joi.string().required().max(number))
+    return x
+}
 
 
 

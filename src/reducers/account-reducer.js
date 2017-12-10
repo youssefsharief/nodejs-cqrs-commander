@@ -4,7 +4,7 @@ const entity = require('../entities/account')
 function getCurrentStateFromEventsAndLatestSnapshot(events, snapshot){
     return  events.reduce((acc, e) => {
         switch (e.name) {
-            case events.accountCreated: return entity.init(e.payload.accountId, e.payload.businessName, e.payload.accountNumber)
+            case events.accountCreated: return entity.init(e.payload)
             case events.accountApproved: return entity.applyApprove(acc, e.payload)
             case events.accountDeleted: return entity.applyDelete(acc, e.payload)
             case events.accountReinstated: return entity.applyReinstate(acc, e.payload)

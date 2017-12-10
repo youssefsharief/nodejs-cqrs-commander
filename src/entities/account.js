@@ -4,10 +4,13 @@ const AddressSubentity = require('./sub-entities/address')
 const crypto = require("crypto");
 const eventsConstants = require('../config/events.constants')
 const events = require('events');
+const joi = require('joi')
 const eventEmitter = new events.EventEmitter();
 
 
-function init(newAccountId, businessName, accountNumber) {
+function create(newAccountId, businessName, accountNumber) {
+    joi.assert(businessName, joi.string().min(2).max(10).required())
+    joi.assert(accountNumber, joi.number().min(1000).max(1000).required())
     const accountId = newAccountId ? newAccountId : crypto.randomBytes(16).toString("hex");
     const accountCreatedEvent = { accountId, businessName, accountNumber }
     const account = applyCreateAccount(accountCreatedEvent)
@@ -15,6 +18,7 @@ function init(newAccountId, businessName, accountNumber) {
     addSystemTag(account, "Transportation", true, false)
     addSystemTag(account, "Sick Leave", false, true)
     addSystemTag(account, "Training", true, true)
+    return account
 }
 
 function applyCreateAccount(e) {
@@ -36,10 +40,12 @@ function applyAddSytemTag(account, e) {
 
 
 function deleteAccount(account, reason) {
-    if (!reason) throw Error('You could not have a blank deleted reason')
+    joi.assert(reason, joi.string().min(1).required().max(100))
+    if (account.status.isDeleted) throw Error('Can not delete a deleted account')
     const event = { accountId: account.id, reason }
     applyDelete(account, event)
     eventEmitter.emit(eventsConstants.internallyDone, eventsConstants.accountDeleted, event)
+    return account
 }
 
 function applyDelete(account, e) {
@@ -54,6 +60,7 @@ function approve(account, approvedBy) {
     const event = { accountId: account.id, approvedBy }
     applyApprove(account, event)
     eventEmitter.emit(eventsConstants.internallyDone, eventsConstants.accountApproved, event)
+    return account
 }
 
 function applyApprove(account, e) {
@@ -66,6 +73,7 @@ function reinstate(account) {
     const event = { accountId: account.id }
     applyReinstate(account, event)
     eventEmitter.emit(eventsConstants.internallyDone, eventsConstants.accountReinstated, event)
+    return account
 }
 
 function applyReinstate(account, e) {
@@ -75,20 +83,20 @@ function applyReinstate(account, e) {
 
 
 function changeAddress(account, addressLine1, addressLine2, city, postcode, state, countryName) {
-    if (!account.status.isDeleted) throw Error('Account is deleted')
+    if (account.status.isDeleted) throw Error('Account is deleted')
     const event = { accountId: account.id, addressLine1, addressLine2, city, postcode, state, countryName }
     applyChangeAddress(account, event)
     eventEmitter.emit(eventsConstants.internallyDone, eventsConstants.accountAddressUpdated, event)
+    return account
 }
 
 function applyChangeAddress(account, e) {
     account.address = AddressSubentity(e.addressLine1, e.addressLine2, e.city, e.postcode, e.state, e.countryName)
     return account
-
 }
 
 module.exports = {
-    addSystemTag, changeAddress, approve, deleteAccount, reinstate, init, applyChangeAddress, applyReinstate,
+    addSystemTag, changeAddress, approve, deleteAccount, reinstate, create, applyChangeAddress, applyReinstate,
     applyApprove, applyDelete, applyAddSytemTag, applyChangeAddress, applyAddSytemTag, eventEmitter
 }
 

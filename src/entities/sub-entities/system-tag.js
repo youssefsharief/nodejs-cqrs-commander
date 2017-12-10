@@ -1,6 +1,14 @@
-const error = require('../../../Ximo/errors')
+const joi = require('joi')
 
-const setName = x => !x ? error.nullOrWhiteSpace('Name') : x
+const setName = x => {
+    joi.assert(x, joi.string().required().min(1))
+    return x
+}
 
+const setRequiredBool = x => {
+    joi.assert(x, joi.bool().required())
+    return x
+}
 
-module.exports = (name, appliesToExpenses, appliesToTimesheets) => ({ name: setName(name), appliesToExpenses, appliesToTimesheets })
+module.exports = (name, appliesToExpenses, appliesToTimesheets) => ({ name: setName(name), appliesToExpenses: setRequiredBool(appliesToExpenses), 
+    appliesToTimesheets: setRequiredBool(appliesToTimesheets) })

@@ -86,7 +86,7 @@ module.exports = {
 
     email(val, argumentName) {
         this.validateArgumentName(argumentName)
-        this.notNullOrWhitespace(value, argumentName)
+        this.notNullOrWhitespace(val, argumentName)
         try {
             joi.validate(val, joi.string().email())
             return val
