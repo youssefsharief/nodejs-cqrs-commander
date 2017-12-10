@@ -1,18 +1,19 @@
 
 const entity = require('../entities/account')
+const eventsConstants = require('../config/events.constants')
 
-function getCurrentStateFromEventsAndLatestSnapshot(events, snapshot){
-    return  events.reduce((acc, e) => {
+function getCurrentStateFromEventsAndLatestSnapshot(events, aggregateState) {
+    return events.reduce((acc, e) => {
         switch (e.name) {
-            case events.accountCreated: return entity.init(e.payload)
-            case events.accountApproved: return entity.applyApprove(acc, e.payload)
-            case events.accountDeleted: return entity.applyDelete(acc, e.payload)
-            case events.accountReinstated: return entity.applyReinstate(acc, e.payload)
-            case events.accountAddressUpdated: return entity.applyChangeAddress(acc, e.payload)
-            case events.systemTagAdded: return entity.applyAddSytemTag(acc, e.payload)
+            case eventsConstants.accountCreated: return entity.applyCreate(e.payload)
+            case eventsConstants.accountApproved: return entity.applyApprove(acc, e.payload)
+            case eventsConstants.accountDeleted: return entity.applyDelete(acc, e.payload)
+            case eventsConstants.accountReinstated: return entity.applyReinstate(acc, e.payload)
+            case eventsConstants.accountAddressUpdated: return entity.applyChangeAddress(acc, e.payload)
+            case eventsConstants.systemTagAdded: return entity.applyAddSytemTag(acc, e.payload)
         }
-    }, snapshot? snapshot.aggregateState: {})
+    }, aggregateState ? aggregateState : {})
 }
 
 
-module.exports = {getCurrentStateFromEventsAndLatestSnapshot}
+module.exports = { getCurrentStateFromEventsAndLatestSnapshot }

@@ -1,6 +1,6 @@
-const StatusSubEntity = require('./sub-entities/status')
-const SystemTagSubEntity = require('./sub-entities/system-tag')
-const AddressSubentity = require('./sub-entities/address')
+const statusSubEntity = require('./sub-entities/status')
+const systemTagSubEntity = require('./sub-entities/system-tag')
+const addressSubentity = require('./sub-entities/address')
 const crypto = require("crypto");
 const eventsConstants = require('../config/events.constants')
 const events = require('events');
@@ -13,7 +13,7 @@ function create(newAccountId, businessName, accountNumber) {
     joi.assert(accountNumber, joi.number().min(1000).max(1000).required())
     const accountId = newAccountId ? newAccountId : crypto.randomBytes(16).toString("hex");
     const accountCreatedEvent = { accountId, businessName, accountNumber }
-    const account = applyCreateAccount(accountCreatedEvent)
+    const account = applyCreate(accountCreatedEvent)
     eventEmitter.emit(eventsConstants.internallyDone, eventsConstants.accountCreated, accountCreatedEvent)
     addSystemTag(account, "Transportation", true, false)
     addSystemTag(account, "Sick Leave", false, true)
@@ -21,7 +21,7 @@ function create(newAccountId, businessName, accountNumber) {
     return account
 }
 
-function applyCreateAccount(e) {
+function applyCreate(e) {
     const account = { id: e.accountId, businessName: e.businessName, accountNumber: e.accountNumber, systemTags: [], status: {}, address: {} }
     return account
 }
@@ -34,7 +34,7 @@ function addSystemTag(account, name, appliesToExpenses, appliesToTimesheets) {
 }
 
 function applyAddSytemTag(account, e) {
-    account.systemTags.push(SystemTagSubEntity(e.name, e.appliesToExpenses, e.appliesToTimesheets))
+    account.systemTags.push(systemTagSubEntity(e.name, e.appliesToExpenses, e.appliesToTimesheets))
     return account
 }
 
@@ -49,7 +49,7 @@ function deleteAccount(account, reason) {
 }
 
 function applyDelete(account, e) {
-    account.status = StatusSubEntity(account.status.isApproved, account.status.approvedBy, true, e.reason)
+    account.status = statusSubEntity(account.status.isApproved, account.status.approvedBy, true, e.reason)
     return account
 }
 
@@ -64,7 +64,7 @@ function approve(account, approvedBy) {
 }
 
 function applyApprove(account, e) {
-    account.status = StatusSubEntity(true, e.approvedBy, false, null)
+    account.status = statusSubEntity(true, e.approvedBy, false, null)
     return account
 }
 
@@ -77,7 +77,7 @@ function reinstate(account) {
 }
 
 function applyReinstate(account, e) {
-    account.status = StatusSubEntity(account.status.isApproved, account.status.approvedBy, false, null)
+    account.status = statusSubEntity(account.status.isApproved, account.status.approvedBy, false, null)
     return account
 }
 
@@ -91,12 +91,12 @@ function changeAddress(account, addressLine1, addressLine2, city, postcode, stat
 }
 
 function applyChangeAddress(account, e) {
-    account.address = AddressSubentity(e.addressLine1, e.addressLine2, e.city, e.postcode, e.state, e.countryName)
+    account.address = addressSubentity(e.addressLine1, e.addressLine2, e.city, e.postcode, e.state, e.countryName)
     return account
 }
 
 module.exports = {
-    addSystemTag, changeAddress, approve, deleteAccount, reinstate, create, applyChangeAddress, applyReinstate,
+    addSystemTag, changeAddress, approve, deleteAccount, reinstate, create, applyCreate, applyChangeAddress, applyReinstate,
     applyApprove, applyDelete, applyAddSytemTag, applyChangeAddress, applyAddSytemTag, eventEmitter
 }
 
