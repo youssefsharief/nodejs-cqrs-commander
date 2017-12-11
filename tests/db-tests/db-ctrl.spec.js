@@ -1,6 +1,6 @@
 require('dotenv').config()
 const faker = require('faker')
-const eventsConstants = require('../../src/config/events.constants')
+const domainEvents = require('../../src/config/events.constants').domainEvents
 const crypto = require('crypto')
 const mongoose = require("mongoose")
 mongoose.Promise = global.Promise;
@@ -24,7 +24,7 @@ describe("Db Event store ", function () {
             const eventsToBeSaved = [
                 {
                     id: crypto.randomBytes(16).toString("hex"),
-                    name: eventsConstants.accountCreated,
+                    name: domainEvents.accountCreated,
                     aggregateId,
                     payload: { id: aggregateId, businessName: faker.name.lastName(), accountNumber: 12345 },
                     eventSequence: 1,
@@ -32,7 +32,7 @@ describe("Db Event store ", function () {
                 },
                 {
                     id: crypto.randomBytes(16).toString("hex"),
-                    name: eventsConstants.systemTagAdded,
+                    name: domainEvents.systemTagAdded,
                     aggregateId,
                     payload: { name: faker.lorem.word(), appliesToExpenses: true, appliesToTimesheets: false },
                     eventSequence: 2,
@@ -40,7 +40,7 @@ describe("Db Event store ", function () {
                 },
                 {
                     id: crypto.randomBytes(16).toString("hex"),
-                    name: eventsConstants.systemTagAdded,
+                    name: domainEvents.systemTagAdded,
                     aggregateId,
                     payload: { name: faker.lorem.word(), appliesToExpenses: true, appliesToTimesheets: false },
                     eventSequence: 3,
@@ -49,7 +49,7 @@ describe("Db Event store ", function () {
                 {
                     id: crypto.randomBytes(16).toString("hex"),
                     aggregateId,
-                    name: eventsConstants.systemTagAdded,
+                    name: domainEvents.systemTagAdded,
                     payload: { name: faker.lorem.word(), appliesToExpenses: true, appliesToTimesheets: false },
                     eventSequence: 4,
                     aggregateVersion: 1
@@ -111,7 +111,7 @@ describe("Db Event store ", function () {
                 const newEventsToBeSaved = [
                     {
                         id: crypto.randomBytes(16).toString("hex"),
-                        name: eventsConstants.accountDeleted,
+                        name: domainEvents.accountDeleted,
                         aggregateId,
                         payload: { reason: 'banana is mooz' },
                         eventSequence: 5,
@@ -119,7 +119,7 @@ describe("Db Event store ", function () {
                     },
                     {
                         id: crypto.randomBytes(16).toString("hex"),
-                        name: eventsConstants.accountReinstated,
+                        name: domainEvents.accountReinstated,
                         aggregateId,
                         payload: {  },
                         eventSequence: 6,

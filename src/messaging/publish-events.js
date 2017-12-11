@@ -1,17 +1,15 @@
 const AWS = require('aws-sdk');
 AWS.config.update({ region: 'us-west-2' });
 const sqs = new AWS.SQS({ apiVersion: '2012-11-05' });
-const {} = require('../testEventSource')
 
-
-function publishEvents(eventName, payload) {
+function publishEvent( payload) {
     const params = {
         DelaySeconds: 0,
         MessageAttributes: { },
         QueueUrl: process.env.AWS_PUBLISHED_EVENTS_QUEUE_URL
     };
     return new Promise((resolve, reject) => {
-        payload.eventName = eventName
+        payload.eventName = 'events persisted to database'
         params.MessageBody = JSON.stringify(payload)        
         sqs.sendMessage(params, function (err, data) {
             if (err) reject(err);
@@ -22,4 +20,4 @@ function publishEvents(eventName, payload) {
 
 
 
-module.exports = { publishEvents }
+module.exports = { publishEvent }

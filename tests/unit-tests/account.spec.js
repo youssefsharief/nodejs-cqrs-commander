@@ -1,14 +1,14 @@
 const faker = require('faker')
 const accountEntity = require('../../src/entities/account')
-const eventsConstants = require('../../src/config/events.constants')
+const domainEvents = require('../../src/config/events.constants').domainEvents
 
 describe("Account ", function () {
 
     describe("Creating Account ", function () {
         // it("should emit 3 events for vreating account and adding 3 system tags ", function () {
         //     let i = 0
-        //     const eventsExpected = [eventsConstants.accountCreated, eventsConstants.systemTagAdded, eventsConstants.systemTagAdded, eventsConstants.systemTagAdded]
-        //     accountEntity.eventEmitter.on(eventsConstants.internallyDone, (eventName, eventPayload) => {
+        //     const eventsExpected = [domainEvents.accountCreated, domainEvents.systemTagAdded, domainEvents.systemTagAdded, domainEvents.systemTagAdded]
+        //     accountEntity.eventEmitter.on(domainEvents.internallyDone, (eventName, eventPayload) => {
         //         expect(eventName).toBe(eventsExpected[i])
         //         if(i===eventsExpected.length - 1) {
         //             accountEntity.eventEmitter.removeAllListeners() 
@@ -58,8 +58,8 @@ describe("Account ", function () {
 
         // it("should emit account deleted event ", function () {
         //     let i = 0
-        //     const eventsExpected = [eventsConstants.accountCreated, eventsConstants.systemTagAdded, eventsConstants.systemTagAdded, eventsConstants.systemTagAdded, eventsConstants.accountDeleted]
-        //     accountEntity.eventEmitter.on(eventsConstants.internallyDone, (eventName, eventPayload) => {
+        //     const eventsExpected = [domainEvents.accountCreated, domainEvents.systemTagAdded, domainEvents.systemTagAdded, domainEvents.systemTagAdded, domainEvents.accountDeleted]
+        //     accountEntity.eventEmitter.on(domainEvents.internallyDone, (eventName, eventPayload) => {
         //         expect(eventName).toBe(eventsExpected[i])
         //         if(i===eventsExpected.length - 1) {
         //             accountEntity.eventEmitter.removeAllListeners() 
