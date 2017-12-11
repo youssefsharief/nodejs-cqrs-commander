@@ -17,13 +17,14 @@ async function handle(commandName, command) {
     let aggregateVersion = null
     async function init() {
         snapshot = await db.getLatestSnapShotByAggregateId(command.id)
-        let nextQuery
+        let query
         if (snapshot) {
-            nextQuery = db.getSortedlastEventsOnly(snapshot.aggregateRootId, snapshot.lastEventSequence)
+            query = db.getSortedlastEventsOnly(snapshot.aggregateRootId, snapshot.lastEventSequence)
         } else {
-            nextQuery = db.getSortedAllAggregateEvents(command.id)
+            query = db.getSortedAllAggregateEvents(command.id)
+            
         }
-        eventsToBeAppliedToEntity = await nextQuery
+        eventsToBeAppliedToEntity = await query
         if (eventsToBeAppliedToEntity.length) {
             eventSequence = eventsToBeAppliedToEntity[eventsToBeAppliedToEntity.length - 1].eventSequence
             aggregateVersion = eventsToBeAppliedToEntity[eventsToBeAppliedToEntity.length - 1].aggregateVersion

@@ -52,7 +52,7 @@ function applyAddSytemTag(account, e) {
 
 
 function deleteAccount(account, reason) {
-    joi.assert(reason, joi.string().min(1).required().max(100))
+    joi.assert(reason, joi.string().min(1).required().max(100), 'Delete reason is required')
     if (account.status.isDeleted) throw Error('Can not delete a deleted account')
     const e = { id: account.id, reason }
     applyDelete(account, e)
