@@ -9,7 +9,6 @@ function publishEvent( payload) {
         QueueUrl: process.env.AWS_PUBLISHED_EVENTS_QUEUE_URL
     };
     return new Promise((resolve, reject) => {
-        payload.eventName = 'events persisted to database'
         params.MessageBody = JSON.stringify(payload)        
         sqs.sendMessage(params, function (err, data) {
             if (err) reject(err);

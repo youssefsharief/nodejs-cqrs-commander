@@ -8,7 +8,7 @@ const events = require('events');
 const aggregateAfterApplyingCommand = require('../services/account-after-command').accountAfterCommand
 const aggregateAfterApplyingEvents = require('../services/account-after-events').accountAfterApplyingEvents
 const eventEmitter = new events.EventEmitter();
-
+const domainBus = require('../services/domain-bus')
 
 async function handle(commandName, command) {
     let snapshot = null
@@ -49,6 +49,7 @@ async function handle(commandName, command) {
 
     eventsToBeSaved.forEach(event => {
         eventEmitter.emit(`${event.name}Persisted`, event)
+        domainBus.publish(event)
     })
     
 }
