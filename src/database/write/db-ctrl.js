@@ -15,7 +15,7 @@ async function getSortedlastEventsOnly(aggregateId, lastEventSequence) {
 async function getLatestSnapShotByAggregateId(aggregateRootId) {
     const snapshots =  await snapshotModel.find({ aggregateRootId }).sort({ lastEventSequence: 1 }).limit(1).lean().exec().catch(err => { throw Error(err) })
     if(snapshots.length) return snapshots[0]
-    else throw Error(`No snapshot with the following ${aggregateRootId} id found`)
+    else return null
 }
 
 

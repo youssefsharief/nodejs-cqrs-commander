@@ -1,3 +1,13 @@
+const domainEvents =  {
+    accountCreated: 'accountCreated',
+    accountDeleted: 'accountDeleted',
+    accountReinstated: 'accountReinstated',
+    accountApproved: 'accountApproved',
+    accountAddressUpdated: 'accountAddressUpdated',
+    systemTagAdded: 'systemTagAdded',
+}
+
+
 module.exports = {
     domainEvents,
     internallyDone: 'internallyDone',
@@ -9,11 +19,3 @@ module.exports = {
     systemTagAddedPersisted: 'systemTagAddedPersisted',
 }
 
-const domainEvents =  {
-    accountCreated: 'accountCreated',
-    accountDeleted: 'accountDeleted',
-    accountReinstated: 'accountReinstated',
-    accountApproved: 'accountApproved',
-    accountAddressUpdated: 'accountAddressUpdated',
-    systemTagAdded: 'systemTagAdded',
-}

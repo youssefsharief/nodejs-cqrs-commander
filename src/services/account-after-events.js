@@ -2,7 +2,7 @@
 const entity = require('../entities/account')
 const domainEvents = require('../config/events.constants').domainEvents
 
-function getCurrentStateFromEventsAndLatestSnapshot(events, aggregateState) {
+function accountAfterApplyingEvents(events, aggregateState) {
     return events.reduce((acc, e) => {
         switch (e.name) {
             case domainEvents.accountCreated: return entity.applyCreate(e.payload)
@@ -16,4 +16,4 @@ function getCurrentStateFromEventsAndLatestSnapshot(events, aggregateState) {
 }
 
 
-module.exports = { getCurrentStateFromEventsAndLatestSnapshot }
+module.exports = { accountAfterApplyingEvents }

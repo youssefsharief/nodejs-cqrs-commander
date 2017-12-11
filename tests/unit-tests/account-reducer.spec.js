@@ -1,5 +1,5 @@
 const faker = require('faker')
-const { getCurrentStateFromEventsAndLatestSnapshot } = require('../../src/reducers/account-reducer')
+const { getCurrentStateFromEventsAndLatestSnapshot } = require('../../src/services/account-after-events')
 const domainEvents = require('../../src/config/events.constants').domainEvents
 
 describe("Account Reducer ", function () {

@@ -11,8 +11,8 @@ const eventEmitter = new events.EventEmitter();
 
 
 function create(newAccountId, businessName, accountNumber) {
-    joi.assert(businessName, joi.string().min(2).max(10).required())
-    joi.assert(accountNumber, joi.number().min(1000).max(1000).required())
+    joi.assert(businessName, joi.string().min(2).max(10).required(),'Business Name')
+    joi.assert(accountNumber, joi.number().min(1000).max(10000).required(), 'Account Number')
     const accountId = newAccountId ? newAccountId : crypto.randomBytes(16).toString("hex");
     const e = { accountId, businessName, accountNumber }
     const account = applyCreate(e)
