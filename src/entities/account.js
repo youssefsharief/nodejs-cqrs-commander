@@ -1,7 +1,7 @@
 const statusSubEntity = require('./sub-entities/status')
 const systemTagSubEntity = require('./sub-entities/system-tag')
 const addressSubentity = require('./sub-entities/address')
-const crypto = require("crypto");
+const generateId = require("../services/id-generator").id;
 const eventsConstants = require('../config/events.constants')
 const domainEvents = require('../config/events.constants').domainEvents
 const events = require('events');
@@ -13,7 +13,7 @@ const eventEmitter = new events.EventEmitter();
 function create(newAccountId, businessName, accountNumber) {
     joi.assert(businessName, joi.string().min(2).max(10).required(),'Business Name')
     joi.assert(accountNumber, joi.number().min(1000).max(10000).required(), 'Account Number')
-    const accountId = newAccountId ? newAccountId : crypto.randomBytes(16).toString("hex");
+    const accountId = newAccountId ? newAccountId : generateId();
     const e = { accountId, businessName, accountNumber }
     const account = applyCreate(e)
     eventEmitter.emit(eventsConstants.internallyDone, domainEvents.accountCreated, e)

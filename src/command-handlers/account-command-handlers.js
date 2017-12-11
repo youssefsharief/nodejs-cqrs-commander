@@ -1,6 +1,6 @@
 
 // const logger = require('../Ximo/CQRS/logging-command-decorator')
-const crypto = require("crypto");
+const generateId = require("../services/id-generator").id;
 const aggregateEntity = require('../entities/account')
 const eventsConstants = require('../config/events.constants')
 const db = require('../database/write/db-ctrl')
@@ -37,7 +37,7 @@ async function handle(commandName, command) {
     const aggregateBeforeCommandConducted = aggregateAfterApplyingEvents(eventsToBeAppliedToEntity, snapshot ? snapshot.payload : null)
     const eventsToBeSaved = []
     aggregateEntity.eventEmitter.on(eventsConstants.internallyDone, (eventName, payload) => {
-        eventsToBeSaved.push({ id: crypto.randomBytes(16).toString("hex"), name: eventName, aggregateId: command.id, payload, eventSequence: ++eventSequence, aggregateVersion: aggregateVersion + 1 })
+        eventsToBeSaved.push({ id: generateId(), name: eventName, aggregateId: command.id, payload, eventSequence: ++eventSequence, aggregateVersion: aggregateVersion + 1 })
     })
 
     const aggregateAfterCommand = aggregateAfterApplyingCommand(aggregateBeforeCommandConducted, command, commandName)

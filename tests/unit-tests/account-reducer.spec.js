@@ -1,5 +1,5 @@
 const faker = require('faker')
-const { getCurrentStateFromEventsAndLatestSnapshot } = require('../../src/services/account-after-events')
+const accountAfterApplyingEvents = require('../../src/services/account-after-events').accountAfterApplyingEvents
 const domainEvents = require('../../src/config/events.constants').domainEvents
 
 describe("Account Reducer ", function () {
@@ -20,7 +20,7 @@ describe("Account Reducer ", function () {
             { name: domainEvents.accountApproved, payload: { id: id, approvedBy: faker.name.firstName() } }
         ]
         it("should go through all events", function () {
-            const currentAccount = getCurrentStateFromEventsAndLatestSnapshot(events, {})
+            const currentAccount = accountAfterApplyingEvents(events, {})
             expect(currentAccount).toBeTruthy()
             expect(currentAccount.status.isApproved).toBe(true)
             expect(currentAccount.status.isDeleted).toBe(false)
@@ -44,7 +44,7 @@ describe("Account Reducer ", function () {
         ]
         it("should throw error", function () {
             try {
-                getCurrentStateFromEventsAndLatestSnapshot(events, {})
+                accountAfterApplyingEvents(events, {})
             } catch (e) {
                 expect(e).toBeTruthy()
             }
@@ -70,12 +70,10 @@ describe("Account Reducer ", function () {
 
         const aggregateState = { businessName: faker.name.firstName(), id: 'daew', accountNumber: 12545454, systemTags: [], status: {}, address: {} }
         it("process snapshotted aggregateState", function () {
-            const currentAccount = getCurrentStateFromEventsAndLatestSnapshot(events, aggregateState)
+            const currentAccount = accountAfterApplyingEvents(events, aggregateState)
             expect(currentAccount).toBeTruthy()
             expect(currentAccount.status.isApproved).toBe(true)
             expect(currentAccount.status.isDeleted).toBe(false)
-
-
         })
 
     })

@@ -1,11 +1,9 @@
 const { connectToDb } = require('../helpers/requestsSpecHelper')
 const faker = require('faker')
-let server, request
 const handle = require('../../src/command-handlers/account-command-handlers').handle
-const commandHanlderEventEmitter = require('../../src/command-handlers/account-command-handlers').eventEmitter
 const commandConstants = require('../../src/config/commands.constants')
 
-fdescribe("Users endpoint", function () {
+describe("Users endpoint", function () {
 
     describe("Create Account", function () {
         const command = {

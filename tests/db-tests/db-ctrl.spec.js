@@ -1,7 +1,7 @@
 require('dotenv').config()
 const faker = require('faker')
 const domainEvents = require('../../src/config/events.constants').domainEvents
-const crypto = require('crypto')
+const generateId = require('../../src/services/id-generator').id
 const mongoose = require("mongoose")
 mongoose.Promise = global.Promise;
 const db = require('../../src/database/write/db-ctrl')
@@ -19,11 +19,11 @@ describe("Db Event store ", function () {
 
 
     describe("Creating a new aggregate", function () {
-        const aggregateId = crypto.randomBytes(16).toString("hex")
+        const aggregateId = generateId()
         beforeAll(async () => {
             const eventsToBeSaved = [
                 {
-                    id: crypto.randomBytes(16).toString("hex"),
+                    id: generateId(),
                     name: domainEvents.accountCreated,
                     aggregateId,
                     payload: { id: aggregateId, businessName: faker.name.lastName(), accountNumber: 12345 },
@@ -31,7 +31,7 @@ describe("Db Event store ", function () {
                     aggregateVersion: 1
                 },
                 {
-                    id: crypto.randomBytes(16).toString("hex"),
+                    id: generateId(),
                     name: domainEvents.systemTagAdded,
                     aggregateId,
                     payload: { name: faker.lorem.word(), appliesToExpenses: true, appliesToTimesheets: false },
@@ -39,7 +39,7 @@ describe("Db Event store ", function () {
                     aggregateVersion: 1
                 },
                 {
-                    id: crypto.randomBytes(16).toString("hex"),
+                    id: generateId(),
                     name: domainEvents.systemTagAdded,
                     aggregateId,
                     payload: { name: faker.lorem.word(), appliesToExpenses: true, appliesToTimesheets: false },
@@ -47,7 +47,7 @@ describe("Db Event store ", function () {
                     aggregateVersion: 1
                 },
                 {
-                    id: crypto.randomBytes(16).toString("hex"),
+                    id: generateId(),
                     aggregateId,
                     name: domainEvents.systemTagAdded,
                     payload: { name: faker.lorem.word(), appliesToExpenses: true, appliesToTimesheets: false },
@@ -110,7 +110,7 @@ describe("Db Event store ", function () {
                 await db.saveSnapshot(snapshot)
                 const newEventsToBeSaved = [
                     {
-                        id: crypto.randomBytes(16).toString("hex"),
+                        id: generateId(),
                         name: domainEvents.accountDeleted,
                         aggregateId,
                         payload: { reason: 'banana is mooz' },
@@ -118,7 +118,7 @@ describe("Db Event store ", function () {
                         aggregateVersion: 2
                     },
                     {
-                        id: crypto.randomBytes(16).toString("hex"),
+                        id: generateId(),
                         name: domainEvents.accountReinstated,
                         aggregateId,
                         payload: {  },
@@ -145,10 +145,10 @@ describe("Db Event store ", function () {
 
 
         it("should emit error if event name is not there", async function () {
-            const aggregateId = crypto.randomBytes(16).toString("hex")
+            const aggregateId = generateId()
             const eventsToBeSaved = [
                 {
-                    id: crypto.randomBytes(16).toString("hex"),
+                    id: generateId(),
                     aggregateId,
                     payload: { id: aggregateId, businessName: faker.name.lastName(), accountNumber: 12345 },
                     eventSequence: 1,
