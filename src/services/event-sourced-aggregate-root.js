@@ -26,36 +26,4 @@ class EventSourcedAggregateRoot {
         })
     }
 
-    applyChange(event)
-    {
-        ApplyEvent(event);
-
-        if (!this._isDirty)
-        {
-            this.version = ++this.version;
-            this._isDirty = true;
-        }
-
-        var domainEventEnvelope = new DomainEventEnvelope(Id, ++LastEventSequence, Version, event);
-        this._uncommittedEvents.push(domainEventEnvelope);
-    }
-}
-
-
-    let _isDirty
-    let version
-    
-function applyChange(aggregate, fn, event ){
-    applyEvent(aggregate, fn,event)
-}
-
-function applyEvent(aggregate, fn,event) {
-    try{
-        fn(event)
-    } catch(e) {
-        throw Error(e)
-    }
-    
-}
-
-
+   

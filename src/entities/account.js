@@ -11,8 +11,6 @@ const eventEmitter = new events.EventEmitter();
 
 
 function create(newAccountId, businessName, accountNumber) {
-    joi.assert(businessName, joi.string().min(2).max(10).required().label('Business Name'))
-    joi.assert(accountNumber, joi.number().min(1000).max(10000).required().label('Business Name'))
     const accountId = newAccountId ? newAccountId : generateId();
     const e = { accountId, businessName, accountNumber }
     const account = applyCreate(e)
