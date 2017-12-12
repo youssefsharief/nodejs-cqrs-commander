@@ -4,7 +4,7 @@ const internallyDoneEvent = require('../config/events.constants').internallyDone
 
 const internalEventsForCommand = (aggregateId, eventSequence, aggregateVersion) => ({
     eventsToBeSaved: [],
-    listen() {
+    listenAndAddToQueueWhenEventIsFired() {
         aggregateEntityEventEmitter.on(internallyDoneEvent, (eventName, payload) => {
             this.eventsToBeSaved.push({
                 id: generateId(),
