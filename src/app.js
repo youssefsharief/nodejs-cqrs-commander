@@ -14,6 +14,6 @@ app.use(require(`./api/routes`))
 
 errorHandlersMiddleware(app)
 
-
+module.exports = app
 
 

@@ -8,7 +8,7 @@ const setState = x => assetLessThan(x, 100)
 const setPostcode = x => assetLessThan(x, 12)
 
 function assetLessThan(x, number) {
-    joi.assert(x, joi.string().required().max(number))
+    joi.assert(x, joi.string().required().max(number).label('address details'))
     return x
 }
 

@@ -1,12 +1,12 @@
 const joi = require('joi')
 
 const setName = x => {
-    joi.assert(x, joi.string().required().min(1))
+    joi.assert(x, joi.string().required().min(1).label('name'))
     return x
 }
 
 const setRequiredBool = x => {
-    joi.assert(x, joi.bool().required())
+    joi.assert(x, joi.bool().required().label('applies'))
     return x
 }
 

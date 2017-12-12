@@ -11,8 +11,8 @@ const eventEmitter = new events.EventEmitter();
 
 
 function create(newAccountId, businessName, accountNumber) {
-    joi.assert(businessName, joi.string().min(2).max(10).required(),'Business Name')
-    joi.assert(accountNumber, joi.number().min(1000).max(10000).required(), 'Account Number')
+    joi.assert(businessName, joi.string().min(2).max(10).required().label('Business Name'))
+    joi.assert(accountNumber, joi.number().min(1000).max(10000).required().label('Business Name'))
     const accountId = newAccountId ? newAccountId : generateId();
     const e = { accountId, businessName, accountNumber }
     const account = applyCreate(e)
@@ -52,7 +52,7 @@ function applyAddSytemTag(account, e) {
 
 
 function deleteAccount(account, reason) {
-    joi.assert(reason, joi.string().min(1).required().max(100), 'Delete reason is required')
+    joi.assert(reason, joi.string().min(1).required().max(100).label('Delete reason'))
     if (account.status.isDeleted) throw Error('Can not delete a deleted account')
     const e = { id: account.id, reason }
     applyDelete(account, e)

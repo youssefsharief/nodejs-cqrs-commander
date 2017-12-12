@@ -9,8 +9,7 @@
     "test": "nodemon --exec jasmine JASMINE_CONFIG_PATH=jasmine.json",
     "dev": "nodemon ./src/bin/www",
     "start": "nf start",
-    "lint": "eslint src/app.js",
-    "db-test": "nf test"
+    "lint": "eslint src/app.js"
   },
   "engines": {
     "node": "8.9.1"
@@ -24,6 +23,7 @@
     "express": "^4.16.2",
     "faker": "^4.1.0",
     "foreman": "2.0.0",
+    "jade": "^1.11.0",
     "joi": "^13.0.2",
     "mongodb": "^3.0.0-rc0",
     "mongoose": "^4.13.6",

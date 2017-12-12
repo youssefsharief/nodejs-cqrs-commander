@@ -4,10 +4,10 @@ const { handle } = require('../command-handlers/account-command-handlers')
 
 
 
-Object.keys(commandsConstants).forEach((x) => {
-    router.post(`/${x}`, (req, res) => {
+Object.keys(commandsConstants).forEach( commandName => {
+    router.post(`/${commandName}`, async(req, res) => {
         try {
-            handle(x, req.body.command)
+            await handle(commandName, req.body)
             return res.status(200).json('ok')
         } catch (err) {
             if (err.name === 'ValidationError' && err.isJoi) return res.status(422).json({ errors: err.details })
