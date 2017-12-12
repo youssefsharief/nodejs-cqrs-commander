@@ -1,5 +1,5 @@
 const faker = require('faker')
-const accountAfterApplyingEvents = require('../../src/services/account-after-events').accountAfterApplyingEvents
+const accountAfterApplyingEvents = require('../../src/command-handlers/map-account-from-previous-events').accountAfterApplyingEvents
 const domainEvents = require('../../src/config/events.constants').domainEvents
 
 describe("Account Reducer ", function () {

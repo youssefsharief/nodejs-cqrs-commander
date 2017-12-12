@@ -8,18 +8,18 @@ module.exports = {
     async handleCreateAccountCommand(command) {
         joi.assert(command.businessName, joi.string().min(2).max(10).required().label('Business Name'))
         joi.assert(command.accountNumber, joi.number().min(1000).max(10000).required().label('Business Name'))
-        await logOnCloud(logLocally(defaultCommandHandling(command), commandsConstants.createAccount))()
+        await logOnCloud(logLocally(defaultCommandHandling(command, commandsConstants.createAccount), commandsConstants.createAccount))()
     },
     
     async handleDeleteAccountCommand(command) {
         joi.assert(command.reason, joi.string().min(1).required().max(100).label('Delete reason'))
-        await logOnCloud(logLocally(defaultCommandHandling(command), commandsConstants.deleteAccount))()
+        await logOnCloud(logLocally(defaultCommandHandling(command, commandsConstants.deleteAccount), commandsConstants.deleteAccount))()
     },
     
     
     async handleApproveAccountCommand(command) {
         joi.assert(command.approvedBy, joi.string().min(1).max(100).label('Approved by'))
-        await logOnCloud(logLocally(defaultCommandHandling(command), commandsConstants.approveAccount))()
+        await logOnCloud(logLocally(defaultCommandHandling(command, commandsConstants.approveAccount), commandsConstants.approveAccount))()
     },
     
     
@@ -30,12 +30,12 @@ module.exports = {
         joi.assert(command.state, joi.string().required().max(100).label('State'))
         joi.assert(command.countryName, joi.string().required().max(100).label('Country'))
         joi.assert(command.postcode, joi.string().required().max(12).label('Post code'))
-        await logOnCloud(logLocally(defaultCommandHandling(command), commandsConstants.updateAccountAddress))()
+        await logOnCloud(logLocally(defaultCommandHandling(command, commandsConstants.updateAccountAddress), commandsConstants.updateAccountAddress))()
     },
     
     
     async handleReinstateAccountCommand(command) {
-        await logOnCloud(logLocally(defaultCommandHandling(command), commandsConstants.reinstateAccount))()
+        await logOnCloud(logLocally(defaultCommandHandling(command, commandsConstants.reinstateAccount), commandsConstants.reinstateAccount))()
     },
     
 }

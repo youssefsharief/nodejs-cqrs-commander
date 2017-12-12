@@ -1,7 +1,7 @@
 const publisher = require('../../src/messaging/publish-events')
 
 
-fdescribe("Users endpoint", function () {
+describe("Users endpoint", function () {
 
 
 

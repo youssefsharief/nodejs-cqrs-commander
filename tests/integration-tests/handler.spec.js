@@ -1,7 +1,6 @@
 const { connectToDb } = require('../helpers/requestsSpecHelper')
 const faker = require('faker')
-const handle = require('../../src/command-handlers/account-command-handlers').handle
-const commandConstants = require('../../src/config/commands.constants')
+const { handleApproveAccountCommand, handleCreateAccountCommand, handleDeleteAccountCommand, handleReinstateAccountCommand } = require('../../src/command-handlers/account-command-handler')
 const generateId = require('../../src/services/id-generator').id
 const db = require('../../src/database/write/db-ctrl')
 
@@ -23,7 +22,7 @@ describe("Users endpoint", function () {
 
 
         it('should pass', async (done) => {
-            await handle(commandConstants.createAccount, command)
+            await handleCreateAccountCommand(command)
             done()
         })
     })
@@ -50,9 +49,9 @@ describe("Users endpoint", function () {
 
 
         it('should pass', async (done) => {
-            await handle(commandConstants.createAccount, createCommand)
-            await handle(commandConstants.deleteAccount, deleteCommand)
-            await handle(commandConstants.reinstateAccount, reinstateAccount)
+            await handleCreateAccountCommand(createCommand)
+            await handleDeleteAccountCommand(deleteCommand)
+            await handleReinstateAccountCommand(reinstateAccount)
             done()
         })
 
@@ -73,17 +72,17 @@ describe("Users endpoint", function () {
             id: id,
         }
         it('should approve account successfully', async (done) => {
-            await handle(commandConstants.createAccount, createCommand)
-            await handle(commandConstants.approveAccount, approveAccount)
+            await handleCreateAccountCommand(createCommand)
+            await handleApproveAccountCommand(approveAccount)
             done()
         })
 
         it('should throw error if approved is blank', async (done) => {
-            await handle(commandConstants.createAccount, createCommand)
-            approveAccount.approvedBy=''
-            try{
-                await handle(commandConstants.approveAccount, approveAccount)
-            } catch(e) {
+            await handleCreateAccountCommand(createCommand)
+            approveAccount.approvedBy = ''
+            try {
+                await handleApproveAccountCommand(approveAccount)
+            } catch (e) {
                 expect(e).toBeTruthy()
                 done()
             }

@@ -1,6 +1,6 @@
-function logOnCloud(fn, commandName) {
+function logOnCloud(fn) {
     return async () => {
-        console.log('Another Decorator', commandName)
+        console.log('Another Decorator')
         try {
             await fn()
         } catch (e) {
