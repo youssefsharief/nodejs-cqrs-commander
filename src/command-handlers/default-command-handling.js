@@ -1,5 +1,5 @@
 const InternalEventsModule = require('./internal-events')
-const DataLayer = require('./command-initial-db-query')
+const DataLayer = require('./data-layer')
 const applyPreviousEventsToAggregate = require('./map-account-from-previous-events').accountAfterApplyingEvents
 const aggregateAfterApplyingCommand = require('./account-after-command').accountAfterCommand
 const events = require('events');

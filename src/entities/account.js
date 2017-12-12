@@ -5,7 +5,6 @@ const generateId = require("../services/id-generator").id;
 const eventsConstants = require('../config/events.constants')
 const domainEvents = require('../config/events.constants').domainEvents
 const events = require('events');
-const joi = require('joi')
 const eventEmitter = new events.EventEmitter();
 
 
@@ -50,7 +49,6 @@ function applyAddSytemTag(account, e) {
 
 
 function deleteAccount(account, reason) {
-    joi.assert(reason, joi.string().min(1).required().max(100).label('Delete reason'))
     if (account.status.isDeleted) throw Error('Can not delete a deleted account')
     const e = { id: account.id, reason }
     applyDelete(account, e)
@@ -72,7 +70,6 @@ function applyDelete(account, e) {
 
 
 function approve(account, approvedBy) {
-    if (!approvedBy) throw Error('You could not have a blank approvedBy')
     if (account.status.isApproved) throw Error('Your account is already approved')
     const e = { id: account.id, approvedBy }
     applyApprove(account, e)

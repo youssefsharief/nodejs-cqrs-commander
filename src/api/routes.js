@@ -1,12 +1,12 @@
 const router = require('express').Router()
 const commandsConstants = require('../config/commands.constants')
-const logLocally = require('../services/local-logger-decorator').logLocally
-const logOnCloud = require('../services/cloud-logger-decorator').logOnCloud
-
+const {handleApproveAccountCommand, handleCreateAccountCommand, handleDeleteAccountCommand, 
+    handleReinstateAccountCommand, handleUpdateAccountAddressCommand} = require('../command-handlers/account-command-handler')
+const {checkForError} = require('./response-error-finder')
 
 router.post(`/${commandsConstants.deleteAccount}`, async (req, res) => {
     try {
-        await logOnCloud(logLocally(deleteAccountCommandHandler(commandsConstants.deleteAccount, req.body), commandsConstants.deleteAccount))()
+        await handleDeleteAccountCommand(req.body)
         return res.status(200).json('ok')
     } catch (err) { checkForError(res, err) }
 })
@@ -15,7 +15,7 @@ router.post(`/${commandsConstants.deleteAccount}`, async (req, res) => {
 
 router.post(`/${commandsConstants.approveAccount}`, async (req, res) => {
     try {
-        await logOnCloud(logLocally(handleFn(commandsConstants.approveAccount, req.body), commandsConstants.approveAccount))()
+        await handleApproveAccountCommand(req.body)
         return res.status(200).json('ok')
     } catch (err) { checkForError(res, err) }
 })
@@ -23,7 +23,7 @@ router.post(`/${commandsConstants.approveAccount}`, async (req, res) => {
 
 router.post(`/${commandsConstants.createAccount}`, async (req, res) => {
     try {
-        await logOnCloud(logLocally(handleFn(commandsConstants.createAccount, req.body), commandsConstants.createAccount))()
+        await handleCreateAccountCommand(req.body)
         return res.status(200).json('ok')
     } catch (err) { checkForError(res, err) }
 })
@@ -31,7 +31,7 @@ router.post(`/${commandsConstants.createAccount}`, async (req, res) => {
 
 router.post(`/${commandsConstants.reinstateAccount}`, async (req, res) => {
     try {
-        await logOnCloud(logLocally(handleFn(commandsConstants.reinstateAccount, req.body), commandsConstants.reinstateAccount))()
+        await handleReinstateAccountCommand(req.body)
         return res.status(200).json('ok')
     } catch (err) { checkForError(res, err) }
 })
@@ -39,7 +39,7 @@ router.post(`/${commandsConstants.reinstateAccount}`, async (req, res) => {
 
 router.post(`/${commandsConstants.updateAccountAddress}`, async (req, res) => {
     try {
-        await logOnCloud(logLocally(handleFn(commandsConstants.updateAccountAddress, req.body), commandsConstants.updateAccountAddress))()
+        await handleUpdateAccountAddressCommand(req.body)
         return res.status(200).json('ok')
     } catch (err) { checkForError(res, err) }
 })

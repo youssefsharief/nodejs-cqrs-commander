@@ -3,4 +3,4 @@ function checkForError(res, err) {
     return res.status(400).json({ error: err.message })
 }
 
-module.exports = checkForError
+module.exports = {checkForError}
