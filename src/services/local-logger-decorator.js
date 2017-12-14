@@ -8,6 +8,7 @@ function logLocally(fn, commandName) {
         } catch (e) {
             console.error(`Exception throw while executing command ${commandName}  ${e.message} `)
             console.timeEnd('Time taken to execute command')
+            // console.log(e.stack)
             throw e
         }
     }
