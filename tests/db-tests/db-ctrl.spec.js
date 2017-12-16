@@ -6,7 +6,6 @@ const mongoose = require("mongoose")
 mongoose.Promise = global.Promise;
 const db = require('../../src/database/write/db-ctrl')
 const dbConnection = require('../../src/database/write/db-connection.js')
-
 describe("Db Event store ", function () {
     beforeAll(async () => {
         dbConnection.connectToTestDb()
@@ -23,7 +22,7 @@ describe("Db Event store ", function () {
         beforeAll(async () => {
             const eventsToBeSaved = [
                 {
-                    id: generateId(),
+                    eventId: generateId(),
                     name: domainEvents.accountCreated,
                     aggregateId,
                     payload: { id: aggregateId, businessName: faker.name.lastName(), accountNumber: 12345 },
@@ -31,26 +30,26 @@ describe("Db Event store ", function () {
                     aggregateVersion: 1
                 },
                 {
-                    id: generateId(),
+                    eventId: generateId(),
                     name: domainEvents.systemTagAdded,
                     aggregateId,
-                    payload: { name: faker.lorem.word(), appliesToExpenses: true, appliesToTimesheets: false },
+                    payload: { systemTagId:generateId(), name: faker.lorem.word(), appliesToExpenses: true, appliesToTimesheets: false },
                     eventSequence: 2,
                     aggregateVersion: 1
                 },
                 {
-                    id: generateId(),
+                    eventId: generateId(),
                     name: domainEvents.systemTagAdded,
                     aggregateId,
-                    payload: { name: faker.lorem.word(), appliesToExpenses: true, appliesToTimesheets: false },
+                    payload: { systemTagId:generateId(), name: faker.lorem.word(), appliesToExpenses: true, appliesToTimesheets: false },
                     eventSequence: 3,
                     aggregateVersion: 1
                 },
                 {
-                    id: generateId(),
+                    eventId: generateId(),
                     aggregateId,
                     name: domainEvents.systemTagAdded,
-                    payload: { name: faker.lorem.word(), appliesToExpenses: true, appliesToTimesheets: false },
+                    payload: { systemTagId:generateId(), name: faker.lorem.word(), appliesToExpenses: true, appliesToTimesheets: false },
                     eventSequence: 4,
                     aggregateVersion: 1
                 },]

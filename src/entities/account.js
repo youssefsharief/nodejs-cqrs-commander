@@ -33,7 +33,7 @@ function applyCreate(e) {
 
 function addSystemTag(account, name, appliesToExpenses, appliesToTimesheets) {
     if (account.systemTags.find(x => x.name === name)) throw Error("This system tag already exixsts")
-    const e = { name, appliesToExpenses, appliesToTimesheets }
+    const e = { systemTagId:generateId(), name, appliesToExpenses, appliesToTimesheets }
     applyAddSytemTag(account, e)
     eventEmitter.emit(eventsConstants.internallyDone, domainEvents.systemTagAdded, e)
 }

@@ -1,3 +1,3 @@
 
 
-module.exports = (name, appliesToExpenses, appliesToTimesheets) => ({ name, appliesToExpenses,    appliesToTimesheets})
+module.exports = (systemTagId, name, appliesToExpenses, appliesToTimesheets) => ({ systemTagId, name, appliesToExpenses,    appliesToTimesheets})
