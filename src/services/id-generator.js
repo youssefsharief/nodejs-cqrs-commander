@@ -1,6 +1,8 @@
 const joi = require('joi')
+var uuid = require('uuid');
 
-const id = () => require('crypto').randomBytes(16).toString("hex")
-const validateId = id => joi.assert(id, joi.string().min(6).max(16).required().label('ID'))
+const id = () => uuid.v4()
+const validateId = id => joi.assert(id, joi.string().uuid())
+
 
 module.exports = {id, validateId}
