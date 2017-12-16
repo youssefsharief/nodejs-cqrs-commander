@@ -4,12 +4,14 @@ const logLocally = require('../services/local-logger-decorator').logLocally
 const logOnCloud = require('../services/cloud-logger-decorator').logOnCloud
 const commandsConstants = require('../config/commands.constants')
 const validateId = require('../services/id-generator').validateId
+const createAccountHandler = require('./create-account-handler').createAccountHandler
+
 module.exports = {
     async handleCreateAccountCommand(command) {
         validateId(command.id)
         joi.assert(command.businessName, joi.string().min(2).max(10).required().label('Business Name'))
         joi.assert(command.accountNumber, joi.number().min(1000).max(10000).required().label('Account Number'))
-        await logOnCloud(logLocally(defaultCommandHandling(command, commandsConstants.createAccount), commandsConstants.createAccount))()
+        await logOnCloud(logLocally(createAccountHandler(command, commandsConstants.createAccount), commandsConstants.createAccount))()
     },
     
     async handleDeleteAccountCommand(command) {
