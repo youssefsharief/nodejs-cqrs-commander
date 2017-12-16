@@ -5,7 +5,7 @@ const accountEntity = require('../entities/account')
 function accountAfterCommand(accountBeforeCommandConducted, command, commandName) {
     switch (commandName) {
         case commandsConstants.createAccount:
-            return accountEntity.create(command.newAccountId, command.businessName, command.accountNumber)
+            return accountEntity.create(command.accountId, command.businessName, command.accountNumber)
         case commandsConstants.reinstateAccount:
             return accountEntity.reinstate(accountBeforeCommandConducted)
         case commandsConstants.deleteAccount:

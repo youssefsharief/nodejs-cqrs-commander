@@ -9,8 +9,7 @@ const eventEmitter = new events.EventEmitter();
 
 
 
-function create(newAccountId, businessName, accountNumber) {
-    const accountId = newAccountId ? newAccountId : generateId();
+function create(accountId, businessName, accountNumber) {
     const e = { accountId, businessName, accountNumber }
     const account = applyCreate(e)
     eventEmitter.emit(eventsConstants.internallyDone, domainEvents.accountCreated, e)
