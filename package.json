@@ -27,7 +27,9 @@
     "joi": "^13.0.2",
     "mongodb": "^3.0.0-rc0",
     "mongoose": "^4.13.6",
-    "node-eventstore": "0.0.1"
+    "node-eventstore": "0.0.1",
+    "ramda": "^0.25.0",
+    "uuid": "^3.1.0"
   },
   "devDependencies": {
     "dotenv": "^4.0.0",
