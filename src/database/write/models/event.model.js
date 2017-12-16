@@ -3,7 +3,10 @@ const Schema = mongoose.Schema
 
 
 const schema = new Schema({
-    eventId:String,
+    eventId: {
+        type: String,
+        required: true
+    },
     name: {
         type: String,
         required: true

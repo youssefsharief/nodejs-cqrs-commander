@@ -7,7 +7,7 @@ const internalEventsForCommand = (aggregateId, eventSequence, aggregateVersion) 
     listenAndAddToQueueWhenEventIsFired() {
         aggregateEntityEventEmitter.on(internallyDoneEvent, (eventName, payload) => {
             this.eventsToBeSaved.push({
-                id: generateId(),
+                eventId: generateId(),
                 name: eventName,
                 aggregateId,
                 payload,

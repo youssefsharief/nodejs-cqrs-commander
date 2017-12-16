@@ -28,5 +28,5 @@ module.exports = defaultCommandHandling
 
 function ensureAggregateHasBeenCreatedBefore(dataLayer) {
     if ((!dataLayer.snapshot || !dataLayer.snapshot.payload) && (!dataLayer.previousEvents.find(x => x.name === 'accountCreated')))
-    throw Error('You could not perform this command on a non existing account')
+    throw Error('You could not perform this action on a non existing account')
 }
