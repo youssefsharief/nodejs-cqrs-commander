@@ -7,13 +7,13 @@ function accountAfterCommand(accountBeforeCommandConducted, command, commandName
         case commandsConstants.createAccount:
             return accountEntity.create(command.newAccountId, command.businessName, command.accountNumber)
         case commandsConstants.reinstateAccount:
-            return accountEntity.reinstate(accountBeforeCommandConducted)
+            return accountEntity.reinstate(accountAvailable(accountBeforeCommandConducted))
         case commandsConstants.deleteAccount:
-            return accountEntity.deleteAccount(accountBeforeCommandConducted, command.reason)
+            return accountEntity.deleteAccount(accountAvailable(accountBeforeCommandConducted), command.reason)
         case commandsConstants.updateAccountAddress:
-            return accountEntity.changeAddress(accountBeforeCommandConducted, command.addressLine1, command.addressLine2, command.city, command.postcode, command.state, command.countryName)
+            return accountEntity.changeAddress(accountAvailable(accountBeforeCommandConducted), command.addressLine1, command.addressLine2, command.city, command.postcode, command.state, command.countryName)
         case commandsConstants.approveAccount:
-            return accountEntity.approve(accountBeforeCommandConducted, command.approvedBy)
+            return accountEntity.approve(accountAvailable(accountBeforeCommandConducted), command.approvedBy)
         default:
             break;
     }
@@ -21,3 +21,11 @@ function accountAfterCommand(accountBeforeCommandConducted, command, commandName
 
 
 module.exports = {accountAfterCommand}
+
+
+function accountAvailable(account) {
+    console.log(account)
+    
+    if (!account) throw Error('This account has not been created before')
+    return account
+}

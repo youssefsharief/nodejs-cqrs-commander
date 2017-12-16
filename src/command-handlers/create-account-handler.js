@@ -1,6 +1,5 @@
 const InternalEventsModule = require('./internal-events')
 const DataLayer = require('./data-layer')
-const replayOldEvents = require('./map-account-from-previous-events').accountAfterApplyingEvents
 const aggregateAfterApplyingCommand = require('./account-after-command').accountAfterCommand
 const events = require('events');
 const eventEmitter = new events.EventEmitter();
@@ -9,13 +8,12 @@ const eventEmitter = new events.EventEmitter();
 module.exports = {
     createAccountHandler(command, commandName) {
         return async () => {
-            const dataLayer = DataLayer(command.id)
+            const dataLayer = DataLayer(command.accountId)
             await dataLayer.saveStateFromDb()
             checkForDuplication(dataLayer)
-            const aggregatAfterReplay = replayOldEvents(dataLayer.previousEvents, dataLayer.snapshot ? dataLayer.snapshot.payload : null)
-            const internalEventsModule = InternalEventsModule(command.id, dataLayer.eventSequence, dataLayer.aggregateVersion)
+            const internalEventsModule = InternalEventsModule(command.accountId, 1, 1)
             internalEventsModule.listenAndAddToQueueWhenEventIsFired()
-            const aggregateAfterCommand = aggregateAfterApplyingCommand(aggregatAfterReplay, command, commandName)
+            const aggregateAfterCommand = aggregateAfterApplyingCommand({}, command, commandName)
             await dataLayer.saveCommandActionsToDb(internalEventsModule.eventsToBeSaved, aggregateAfterCommand)
             internalEventsModule.eventsToBeSaved.forEach(event => {
                 eventEmitter.emit(`${event.name}Persisted`, event)

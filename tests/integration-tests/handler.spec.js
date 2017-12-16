@@ -30,21 +30,21 @@ describe("Users endpoint", function () {
 
 
     describe("Reinstate Account", function () {
-        const id = generateId()
+        const accountId = generateId()
         const createCommand = {
             accountNumber: 5652,
-            id: id,
+            accountId,
             businessName: faker.name.firstName(),
         }
 
         const deleteCommand = {
             reason: 'dsd',
-            id: id,
+            accountId,
         }
 
         const reinstateAccount = {
             reason: 'dsd',
-            id: id,
+            accountId,
         }
 
 
@@ -60,16 +60,16 @@ describe("Users endpoint", function () {
 
 
     describe("Approve Account", function () {
-        const id = generateId()
+        const accountId = generateId()
         const createCommand = {
             accountNumber: 5652,
-            id: id,
+            accountId,
             businessName: faker.name.firstName(),
         }
 
         const approveAccount = {
             approvedBy: 'dsd',
-            id: id,
+            accountId,
         }
         it('should approve account successfully', async (done) => {
             await handleCreateAccountCommand(createCommand)

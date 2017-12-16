@@ -25,7 +25,7 @@ describe("Account ", function () {
             expect(newAccount).toBeTruthy()
             expect(newAccount.businessName).toBeTruthy()
             expect(newAccount.accountNumber).toBeTruthy()
-            expect(newAccount.id).toBeTruthy()
+            expect(newAccount.accountId).toBeTruthy()
             expect(newAccount.systemTags.length).toBe(3)
         })
 
