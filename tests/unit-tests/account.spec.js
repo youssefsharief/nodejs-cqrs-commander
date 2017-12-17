@@ -1,27 +1,13 @@
 const faker = require('faker')
 const accountEntity = require('../../src/entities/account')
-const domainEvents = require('../../src/config/events.constants').domainEvents
+const generateId = require('../../src/services/id-generator').id
 
 describe("Account ", function () {
 
     describe("Creating Account ", function () {
-        // it("should emit 3 events for vreating account and adding 3 system tags ", function () {
-        //     let i = 0
-        //     const eventsExpected = [domainEvents.accountCreated, domainEvents.systemTagAdded, domainEvents.systemTagAdded, domainEvents.systemTagAdded]
-        //     accountEntity.eventEmitter.on(domainEvents.internallyDone, (eventName, eventPayload) => {
-        //         expect(eventName).toBe(eventsExpected[i])
-        //         if(i===eventsExpected.length - 1) {
-        //             accountEntity.eventEmitter.removeAllListeners() 
-        //             return
-        //         }
-        //         i++
-        //     })
-            
-        //     const newAccount = accountEntity.create(null, faker.name.firstName(), faker.commerce.price(1000, 1000))
-        // })
 
         it("should create account with proper properties", function () {
-            const newAccount = accountEntity.create(null, faker.name.firstName(), faker.commerce.price(1000, 1000))
+            const newAccount = accountEntity.create(generateId(), faker.name.firstName(), faker.commerce.price(1000, 1000))
             expect(newAccount).toBeTruthy()
             expect(newAccount.businessName).toBeTruthy()
             expect(newAccount.accountNumber).toBeTruthy()

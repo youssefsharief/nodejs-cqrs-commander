@@ -6,19 +6,18 @@ const eventEmitter = new events.EventEmitter();
 
 
 module.exports = {
-    createAccountHandler(command, commandName) {
-        return async () => {
-            const dataLayer = DataLayer(command.accountId)
-            await dataLayer.saveStateFromDb()
-            checkForDuplication(dataLayer)
-            const internalEventsModule = InternalEventsModule(command.accountId, 1, 1)
-            internalEventsModule.listenAndAddToQueueWhenEventIsFired()
-            const aggregateAfterCommand = aggregateAfterApplyingCommand({}, command, commandName)
-            await dataLayer.saveCommandActionsToDb(internalEventsModule.eventsToBeSaved, aggregateAfterCommand)
-            internalEventsModule.eventsToBeSaved.forEach(event => {
-                eventEmitter.emit(`${event.name}Persisted`, event)
-            })
-        }
+    async createAccountHandler(command, commandName) {
+        const dataLayer = DataLayer(command.accountId)
+        await dataLayer.saveStateFromDb()
+        checkForDuplication(dataLayer)
+        const internalEventsModule = InternalEventsModule(command.accountId, 1, 1)
+        internalEventsModule.listenAndAddToQueueWhenEventIsFired()
+        const aggregateAfterCommand = aggregateAfterApplyingCommand({}, command, commandName)
+        const res = await dataLayer.saveCommandActionsToDb(internalEventsModule.eventsToBeSaved, aggregateAfterCommand)
+        internalEventsModule.eventsToBeSaved.forEach(event => {
+            eventEmitter.emit(`${event.name}Persisted`, event)
+        })
+        return res
     }
 }
 

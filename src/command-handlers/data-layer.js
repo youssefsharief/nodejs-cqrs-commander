@@ -27,9 +27,11 @@ const handlerDataLayer = (aggregateId) => ({
 
     async saveCommandActionsToDb(newEvents, aggregateAfterApplingCommand) {
         await db.concurrencyCheck(this.aggregateVersion, aggregateAfterApplingCommand.accountId)
-        await db.saveEvents(newEvents)
+        const res = await db.saveEvents(newEvents)
         if (newEvents.findIndex(e => e.sequence % 10 === 0) >= 0)
-            await db.saveSnapshot({ lastEventSequence: this.eventSequence, aggregateRootId: aggregateAfterApplingCommand.accountId, payload: aggregateAfterApplingCommand })
+            await db.saveSnapshot({ lastEventSequence: this.eventSequence,
+                 aggregateRootId: aggregateAfterApplingCommand.accountId, payload: aggregateAfterApplingCommand })
+        return res
     }
 
 })

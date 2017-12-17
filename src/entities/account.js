@@ -70,7 +70,7 @@ function applyDelete(account, e) {
 
 function approve(account, approvedBy) {
     if (account.status.isApproved) throw Error('Your account is already approved')
-    const e = { id: account.accountId, approvedBy }
+    const e = { accountId: account.accountId, approvedBy }
     applyApprove(account, e)
     eventEmitter.emit(eventsConstants.internallyDone, domainEvents.accountApproved, e)
     return account
@@ -86,7 +86,7 @@ function applyApprove(account, e) {
 
 function reinstate(account) {
     if (!account.status.isDeleted) throw Error('The account cannot be reinstated as it has not been deleted in the first place :)')
-    const e = { id: account.accountId }
+    const e = { accountId: account.accountId }
     applyReinstate(account, e)
     eventEmitter.emit(eventsConstants.internallyDone, domainEvents.accountReinstated, e)
     return account
@@ -105,7 +105,7 @@ function applyReinstate(account, e) {
 
 function changeAddress(account, addressLine1, addressLine2, city, postcode, state, countryName) {
     if (account.status.isDeleted) throw Error('Account is deleted')
-    const e = { id: account.accountId, addressLine1, addressLine2, city, postcode, state, countryName }
+    const e = { accountId: account.accountId, addressLine1, addressLine2, city, postcode, state, countryName }
     applyChangeAddress(account, e)
     eventEmitter.emit(eventsConstants.internallyDone, domainEvents.accountAddressUpdated, e)
     return account

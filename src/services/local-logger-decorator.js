@@ -3,8 +3,9 @@ function logLocally(fn, commandName) {
         console.log(`Start executing command ${commandName}`)
         console.time('Time taken to execute command')
         try {
-            await fn()
+            const res = await fn()
             console.timeEnd('Time taken to execute command')
+            return res
         } catch (e) {
             console.error(`Exception throw while executing command ${commandName}  ${e.message} `)
             console.timeEnd('Time taken to execute command')

@@ -25,7 +25,7 @@ describe("Db Event store ", function () {
                     eventId: generateId(),
                     name: domainEvents.accountCreated,
                     aggregateId,
-                    payload: { id: aggregateId, businessName: faker.name.lastName(), accountNumber: 12345 },
+                    payload: { accountId: aggregateId, businessName: faker.name.lastName(), accountNumber: 12345 },
                     eventSequence: 1,
                     aggregateVersion: 1
                 },
@@ -102,14 +102,14 @@ describe("Db Event store ", function () {
             }
         })
 
-        describe(('Saveing new sets of events after saving snapshot'), () => {
+        describe(('Saving new sets of events after saving snapshot'), () => {
             const snapshot = { lastEventSequence: 4, aggregateRootId: aggregateId, payload: { accountNumber: 1234 } }
 
             beforeAll(async () => {
                 await db.saveSnapshot(snapshot)
                 const newEventsToBeSaved = [
                     {
-                        id: generateId(),
+                        eventId: generateId(),
                         name: domainEvents.accountDeleted,
                         aggregateId,
                         payload: { reason: 'banana is mooz' },
@@ -117,7 +117,7 @@ describe("Db Event store ", function () {
                         aggregateVersion: 2
                     },
                     {
-                        id: generateId(),
+                        eventId: generateId(),
                         name: domainEvents.accountReinstated,
                         aggregateId,
                         payload: {  },
@@ -147,9 +147,9 @@ describe("Db Event store ", function () {
             const aggregateId = generateId()
             const eventsToBeSaved = [
                 {
-                    id: generateId(),
+                    eventId: generateId(),
                     aggregateId,
-                    payload: { id: aggregateId, businessName: faker.name.lastName(), accountNumber: 12345 },
+                    payload: { accountId: aggregateId, businessName: faker.name.lastName(), accountNumber: 12345 },
                     eventSequence: 1,
                     aggregateVersion: 1
                 },
