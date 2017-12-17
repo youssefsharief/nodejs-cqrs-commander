@@ -35,7 +35,7 @@ module.exports = {
         joi.assert(command.city, joi.string().required().max(100).label('City'))
         joi.assert(command.state, joi.string().required().max(100).label('State'))
         joi.assert(command.countryName, joi.string().required().max(100).label('Country'))
-        joi.assert(command.postcode, joi.string().required().max(12).label('Post code'))
+        joi.assert(command.postcode, joi.number().required().max(12).label('Post code'))
         return await logOnCloud(logLocally(async () => await defaultCommandHandling(command, commandsConstants.updateAccountAddress), commandsConstants.updateAccountAddress))()
     },
 
