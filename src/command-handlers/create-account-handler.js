@@ -1,8 +1,6 @@
 const InternalEventsModule = require('./internal-events')
 const DataLayer = require('./data-layer')
 const aggregateAfterApplyingCommand = require('./account-after-command').accountAfterCommand
-const events = require('events');
-const eventEmitter = new events.EventEmitter();
 
 
 module.exports = {
@@ -13,11 +11,7 @@ module.exports = {
         const internalEventsModule = InternalEventsModule(command.accountId, 1, 1)
         internalEventsModule.listenAndAddToQueueWhenEventIsFired()
         const aggregateAfterCommand = aggregateAfterApplyingCommand({}, command, commandName)
-        const res = await dataLayer.saveCommandActionsToDb(internalEventsModule.eventsToBeSaved, aggregateAfterCommand)
-        internalEventsModule.eventsToBeSaved.forEach(event => {
-            eventEmitter.emit(`${event.name}Persisted`, event)
-        })
-        return res
+        return await dataLayer.saveCommandActionsToDb(internalEventsModule.eventsToBeSaved, aggregateAfterCommand)
     }
 }
 

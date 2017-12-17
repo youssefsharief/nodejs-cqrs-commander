@@ -2,9 +2,6 @@ const InternalEventsModule = require('./internal-events')
 const DataLayer = require('./data-layer')
 const replayOldEvents = require('./map-account-from-previous-events').accountAfterApplyingEvents
 const aggregateAfterApplyingCommand = require('./account-after-command').accountAfterCommand
-const events = require('events');
-const eventEmitter = new events.EventEmitter();
-
 
 
 async function defaultCommandHandling(command, commandName) {
@@ -15,11 +12,7 @@ async function defaultCommandHandling(command, commandName) {
     const internalEventsModule = InternalEventsModule(command.accountId, dataLayer.eventSequence, dataLayer.aggregateVersion)
     internalEventsModule.listenAndAddToQueueWhenEventIsFired()
     const aggregateAfterCommand = aggregateAfterApplyingCommand(aggregatAfterReplay, command, commandName)
-    const res = await dataLayer.saveCommandActionsToDb(internalEventsModule.eventsToBeSaved, aggregateAfterCommand)
-    internalEventsModule.eventsToBeSaved.forEach(event => {
-        eventEmitter.emit(`${event.name}Persisted`, event)
-    })
-    return res
+    return await dataLayer.saveCommandActionsToDb(internalEventsModule.eventsToBeSaved, aggregateAfterCommand)
 }
 
 

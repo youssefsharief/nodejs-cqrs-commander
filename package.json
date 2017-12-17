@@ -6,8 +6,9 @@
     "coverage": "nodemon --exec istanbul cover node_modules/jasmine/bin/jasmine.js JASMINE_CONFIG_PATH=jasmine.json",
     "test": "nodemon --exec jasmine JASMINE_CONFIG_PATH=jasmine.json",
     "dev": "nodemon ./src/bin/www",
-    "start": "nf start",
-    "lint": "eslint src/app.js"
+    "start": "node ./src/bin/www",
+    "lint": "eslint src/app.js",
+    "nf": "nf start"
   },
   "engines": {
     "node": "8.9.1"
