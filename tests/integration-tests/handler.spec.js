@@ -2,14 +2,12 @@ const { connectToDb } = require('../helpers/requestsSpecHelper')
 const faker = require('faker')
 const { handleApproveAccountCommand, handleCreateAccountCommand, handleDeleteAccountCommand, handleReinstateAccountCommand } = require('../../src/command-handlers/account-command-handler')
 const generateId = require('../../src/services/id-generator').id
-const db = require('../../src/database/write/db-ctrl')
 const winstonLogger = require('../../src/services/winston-logger')
 winstonLogger.configure()
 
 describe("Users endpoint", function () {
 
     afterAll(() => {
-        db.removeAllEvents()
     })
     beforeAll(() => {
         connectToDb()

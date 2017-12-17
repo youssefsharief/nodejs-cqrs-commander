@@ -9,11 +9,9 @@ const dbConnection = require('../../src/database/write/db-connection.js')
 describe("Db Event store ", function () {
     beforeAll(async () => {
         dbConnection.connectToTestDb()
-        await db.removeAllEvents()
     })
 
     afterAll(async () => {
-        await db.removeAllEvents()
     })
 
 

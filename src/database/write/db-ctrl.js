@@ -38,10 +38,6 @@ async function saveEvents(uncommitedEvents) {
 }
 
 
-// For Testing only 
-async function removeAllEvents() {
-    return await eventModel.remove({}).exec().catch(err => { throw err })
-}
 
 
 async function saveSnapshot(snapshot) {
@@ -53,5 +49,5 @@ async function saveSnapshot(snapshot) {
 
 module.exports = {
     getSortedAllAggregateEvents, getSortedlastEventsOnly,
-    getLatestSnapShotByAggregateId, concurrencyCheck, saveEvents, removeAllEvents, saveSnapshot
+    getLatestSnapShotByAggregateId, concurrencyCheck, saveEvents, saveSnapshot
 }
